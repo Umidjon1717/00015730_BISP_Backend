@@ -1,0 +1,552 @@
+{
+  "categories": [
+    {
+      "name": "Living Room",
+      "description": "Sofas, coffee tables, and living room essentials."
+    },
+    {
+      "name": "Bedroom",
+      "description": "Beds, nightstands, and bedroom furniture."
+    },
+    {
+      "name": "Dining",
+      "description": "Dining tables, chairs, and dining room sets."
+    },
+    {
+      "name": "Office",
+      "description": "Desks, chairs, and storage for productive spaces."
+    },
+    {
+      "name": "Outdoor",
+      "description": "Patio seating and outdoor-ready furniture."
+    },
+    {
+      "name": "Lighting",
+      "description": "Lamps and lighting to set the mood."
+    }
+  ],
+  "products": [
+    {
+      "sku": "SOFA-001",
+      "name": "Modern 3-Seater Sofa",
+      "description": "Comfortable modern sofa with durable fabric upholstery.",
+      "price": 799.99,
+      "stock": 12,
+      "tags": ["sofa", "living", "modern"],
+      "colors": ["gray", "beige"],
+      "images": [
+        "https://images.unsplash.com/photo-1540574163026-643ea20ade25?auto=format&fit=crop&w=1200&q=60",
+        "https://images.unsplash.com/photo-1549187774-b4e9b0445b41?auto=format&fit=crop&w=1200&q=60"
+      ],
+      "category": "Living Room",
+      "detail": {
+        "with": 210,
+        "heght": 85,
+        "depth": 92,
+        "weight": 55,
+        "seatHeight": 45,
+        "legHeight": 12,
+        "countryOrigin": "Italy",
+        "capacity": 3,
+        "warranty": 24,
+        "maxLoadCapacity": 300,
+        "material": "Wood + metal frame",
+        "fillingMaterial": "High density foam",
+        "upholsteryMaterial": "Polyester fabric"
+      }
+    },
+    {
+      "sku": "SOFA-002",
+      "name": "Sectional Sofa (L-Shape)",
+      "description": "Spacious L-shaped sectional with deep seats and easy-clean upholstery.",
+      "price": 1299.0,
+      "stock": 7,
+      "tags": ["sofa", "sectional", "living"],
+      "colors": ["charcoal", "sand"],
+      "images": [
+        "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1200&q=60",
+        "https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=1200&q=60"
+      ],
+      "category": "Living Room",
+      "detail": {
+        "with": 285,
+        "heght": 86,
+        "depth": 165,
+        "weight": 78,
+        "seatHeight": 45,
+        "legHeight": 13,
+        "countryOrigin": "Poland",
+        "capacity": 5,
+        "warranty": 24,
+        "maxLoadCapacity": 450,
+        "material": "Hardwood frame",
+        "fillingMaterial": "Foam + fiber blend",
+        "upholsteryMaterial": "Performance fabric"
+      }
+    },
+    {
+      "sku": "LIV-CT-001",
+      "name": "Round Coffee Table",
+      "description": "Round coffee table with a warm wood top and powder-coated steel base.",
+      "price": 249.99,
+      "stock": 20,
+      "tags": ["coffee table", "living", "round"],
+      "colors": ["oak", "black"],
+      "images": [
+        "https://images.unsplash.com/photo-1615873968403-89e068629265?auto=format&fit=crop&w=1200&q=60",
+        "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=1200&q=60"
+      ],
+      "category": "Living Room",
+      "detail": {
+        "with": 85,
+        "heght": 42,
+        "depth": 85,
+        "weight": 18,
+        "seatHeight": 0,
+        "legHeight": 40,
+        "countryOrigin": "Vietnam",
+        "capacity": 0,
+        "warranty": 12,
+        "maxLoadCapacity": 60,
+        "material": "Oak veneer + steel",
+        "fillingMaterial": "N/A",
+        "upholsteryMaterial": "N/A"
+      }
+    },
+    {
+      "sku": "LIV-TV-001",
+      "name": "Media Console (160cm)",
+      "description": "Low-profile media console with cable management and soft-close doors.",
+      "price": 399.0,
+      "stock": 14,
+      "tags": ["tv stand", "media", "storage"],
+      "colors": ["walnut", "black"],
+      "images": [
+        "https://images.unsplash.com/photo-1582582494700-5f934bfcc8f3?auto=format&fit=crop&w=1200&q=60",
+        "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=1200&q=60"
+      ],
+      "category": "Living Room",
+      "detail": {
+        "with": 160,
+        "heght": 52,
+        "depth": 40,
+        "weight": 34,
+        "seatHeight": 0,
+        "legHeight": 18,
+        "countryOrigin": "Malaysia",
+        "capacity": 0,
+        "warranty": 24,
+        "maxLoadCapacity": 80,
+        "material": "Engineered wood",
+        "fillingMaterial": "N/A",
+        "upholsteryMaterial": "N/A"
+      }
+    },
+    {
+      "sku": "BED-001",
+      "name": "Queen Platform Bed",
+      "description": "Minimal platform bed frame with sturdy wooden slats.",
+      "price": 649.0,
+      "stock": 8,
+      "tags": ["bed", "bedroom", "platform"],
+      "colors": ["walnut"],
+      "images": [
+        "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1200&q=60",
+        "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1200&q=60"
+      ],
+      "category": "Bedroom",
+      "detail": {
+        "with": 160,
+        "heght": 35,
+        "depth": 205,
+        "weight": 42,
+        "seatHeight": 0,
+        "legHeight": 18,
+        "countryOrigin": "Turkey",
+        "capacity": 2,
+        "warranty": 24,
+        "maxLoadCapacity": 350,
+        "material": "Engineered wood",
+        "fillingMaterial": "N/A",
+        "upholsteryMaterial": "N/A"
+      }
+    },
+    {
+      "sku": "BED-002",
+      "name": "Upholstered Queen Bed Frame",
+      "description": "Soft upholstered bed frame with padded headboard for extra comfort.",
+      "price": 749.0,
+      "stock": 6,
+      "tags": ["bed", "upholstered", "bedroom"],
+      "colors": ["cream", "stone"],
+      "images": [
+        "https://images.unsplash.com/photo-1505693314120-0d443867891c?auto=format&fit=crop&w=1200&q=60",
+        "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1200&q=60"
+      ],
+      "category": "Bedroom",
+      "detail": {
+        "with": 165,
+        "heght": 110,
+        "depth": 215,
+        "weight": 58,
+        "seatHeight": 0,
+        "legHeight": 14,
+        "countryOrigin": "Spain",
+        "capacity": 2,
+        "warranty": 24,
+        "maxLoadCapacity": 360,
+        "material": "Hardwood + plywood",
+        "fillingMaterial": "Foam",
+        "upholsteryMaterial": "Linen blend"
+      }
+    },
+    {
+      "sku": "BED-NS-001",
+      "name": "Nightstand with Drawer",
+      "description": "Compact nightstand with a smooth-glide drawer and open shelf.",
+      "price": 129.0,
+      "stock": 30,
+      "tags": ["nightstand", "bedroom", "storage"],
+      "colors": ["oak", "white"],
+      "images": [
+        "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=1200&q=60",
+        "https://images.unsplash.com/photo-1582582494700-5f934bfcc8f3?auto=format&fit=crop&w=1200&q=60"
+      ],
+      "category": "Bedroom",
+      "detail": {
+        "with": 45,
+        "heght": 55,
+        "depth": 38,
+        "weight": 12,
+        "seatHeight": 0,
+        "legHeight": 10,
+        "countryOrigin": "Turkey",
+        "capacity": 0,
+        "warranty": 12,
+        "maxLoadCapacity": 25,
+        "material": "MDF + veneer",
+        "fillingMaterial": "N/A",
+        "upholsteryMaterial": "N/A"
+      }
+    },
+    {
+      "sku": "BED-DR-001",
+      "name": "6-Drawer Dresser",
+      "description": "Spacious dresser with six drawers and anti-tip wall strap included.",
+      "price": 499.0,
+      "stock": 10,
+      "tags": ["dresser", "storage", "bedroom"],
+      "colors": ["walnut", "white"],
+      "images": [
+        "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&w=1200&q=60",
+        "https://images.unsplash.com/photo-1582582494700-5f934bfcc8f3?auto=format&fit=crop&w=1200&q=60"
+      ],
+      "category": "Bedroom",
+      "detail": {
+        "with": 140,
+        "heght": 78,
+        "depth": 45,
+        "weight": 48,
+        "seatHeight": 0,
+        "legHeight": 12,
+        "countryOrigin": "Romania",
+        "capacity": 0,
+        "warranty": 24,
+        "maxLoadCapacity": 70,
+        "material": "Engineered wood",
+        "fillingMaterial": "N/A",
+        "upholsteryMaterial": "N/A"
+      }
+    },
+    {
+      "sku": "DIN-001",
+      "name": "Oak Dining Table (6 seats)",
+      "description": "Solid oak dining table finished with a protective clear coat.",
+      "price": 999.5,
+      "stock": 5,
+      "tags": ["dining", "table", "oak"],
+      "colors": ["oak"],
+      "images": [
+        "https://images.unsplash.com/photo-1549497538-303791108f95?auto=format&fit=crop&w=1200&q=60",
+        "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1200&q=60"
+      ],
+      "category": "Dining",
+      "detail": {
+        "with": 180,
+        "heght": 75,
+        "depth": 90,
+        "weight": 60,
+        "seatHeight": 0,
+        "legHeight": 70,
+        "countryOrigin": "Germany",
+        "capacity": 6,
+        "warranty": 36,
+        "maxLoadCapacity": 250,
+        "material": "Solid oak",
+        "fillingMaterial": "N/A",
+        "upholsteryMaterial": "N/A"
+      }
+    },
+    {
+      "sku": "DIN-CH-001",
+      "name": "Dining Chair (Set of 2)",
+      "description": "Pair of comfortable dining chairs with curved backrest and durable finish.",
+      "price": 199.0,
+      "stock": 40,
+      "tags": ["dining", "chair", "set"],
+      "colors": ["black", "natural"],
+      "images": [
+        "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=1200&q=60",
+        "https://images.unsplash.com/photo-1549497538-303791108f95?auto=format&fit=crop&w=1200&q=60"
+      ],
+      "category": "Dining",
+      "detail": {
+        "with": 48,
+        "heght": 82,
+        "depth": 52,
+        "weight": 7,
+        "seatHeight": 46,
+        "legHeight": 44,
+        "countryOrigin": "China",
+        "capacity": 1,
+        "warranty": 12,
+        "maxLoadCapacity": 120,
+        "material": "Solid wood",
+        "fillingMaterial": "N/A",
+        "upholsteryMaterial": "N/A"
+      }
+    },
+    {
+      "sku": "DIN-BF-001",
+      "name": "Dining Buffet Cabinet",
+      "description": "Buffet cabinet with adjustable shelves and roomy drawers for serving ware.",
+      "price": 589.0,
+      "stock": 9,
+      "tags": ["dining", "storage", "buffet"],
+      "colors": ["walnut"],
+      "images": [
+        "https://images.unsplash.com/photo-1615873968403-89e068629265?auto=format&fit=crop&w=1200&q=60",
+        "https://images.unsplash.com/photo-1582582494700-5f934bfcc8f3?auto=format&fit=crop&w=1200&q=60"
+      ],
+      "category": "Dining",
+      "detail": {
+        "with": 150,
+        "heght": 85,
+        "depth": 45,
+        "weight": 52,
+        "seatHeight": 0,
+        "legHeight": 15,
+        "countryOrigin": "Malaysia",
+        "capacity": 0,
+        "warranty": 24,
+        "maxLoadCapacity": 90,
+        "material": "Engineered wood",
+        "fillingMaterial": "N/A",
+        "upholsteryMaterial": "N/A"
+      }
+    },
+    {
+      "sku": "OFF-DSK-001",
+      "name": "Standing Desk (120cm)",
+      "description": "Height-adjustable standing desk with a sturdy frame and smooth lift.",
+      "price": 429.0,
+      "stock": 11,
+      "tags": ["office", "desk", "standing"],
+      "colors": ["black", "white"],
+      "images": [
+        "https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=1200&q=60",
+        "https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1200&q=60"
+      ],
+      "category": "Office",
+      "detail": {
+        "with": 120,
+        "heght": 120,
+        "depth": 60,
+        "weight": 28,
+        "seatHeight": 0,
+        "legHeight": 70,
+        "countryOrigin": "China",
+        "capacity": 0,
+        "warranty": 24,
+        "maxLoadCapacity": 80,
+        "material": "Steel frame + laminated top",
+        "fillingMaterial": "N/A",
+        "upholsteryMaterial": "N/A"
+      }
+    },
+    {
+      "sku": "OFF-CHR-001",
+      "name": "Ergonomic Office Chair",
+      "description": "Breathable mesh chair with lumbar support and adjustable armrests.",
+      "price": 219.0,
+      "stock": 25,
+      "tags": ["office", "chair", "ergonomic"],
+      "colors": ["black", "gray"],
+      "images": [
+        "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=1200&q=60",
+        "https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=1200&q=60"
+      ],
+      "category": "Office",
+      "detail": {
+        "with": 66,
+        "heght": 120,
+        "depth": 66,
+        "weight": 14,
+        "seatHeight": 48,
+        "legHeight": 45,
+        "countryOrigin": "Taiwan",
+        "capacity": 1,
+        "warranty": 24,
+        "maxLoadCapacity": 140,
+        "material": "Nylon + steel",
+        "fillingMaterial": "Foam",
+        "upholsteryMaterial": "Mesh fabric"
+      }
+    },
+    {
+      "sku": "OFF-SHLF-001",
+      "name": "Bookcase (5-Shelf)",
+      "description": "Tall bookcase with five shelves for books, decor, and storage baskets.",
+      "price": 189.0,
+      "stock": 18,
+      "tags": ["office", "storage", "bookcase"],
+      "colors": ["oak", "white"],
+      "images": [
+        "https://images.unsplash.com/photo-1582582494700-5f934bfcc8f3?auto=format&fit=crop&w=1200&q=60",
+        "https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1200&q=60"
+      ],
+      "category": "Office",
+      "detail": {
+        "with": 80,
+        "heght": 180,
+        "depth": 30,
+        "weight": 26,
+        "seatHeight": 0,
+        "legHeight": 8,
+        "countryOrigin": "Turkey",
+        "capacity": 0,
+        "warranty": 12,
+        "maxLoadCapacity": 75,
+        "material": "Engineered wood",
+        "fillingMaterial": "N/A",
+        "upholsteryMaterial": "N/A"
+      }
+    },
+    {
+      "sku": "OUT-SET-001",
+      "name": "Outdoor Bistro Set (3 pcs)",
+      "description": "Compact outdoor bistro set with 2 chairs and a round table, weather-resistant.",
+      "price": 299.0,
+      "stock": 13,
+      "tags": ["outdoor", "patio", "bistro"],
+      "colors": ["black", "green"],
+      "images": [
+        "https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=1200&q=60",
+        "https://images.unsplash.com/photo-1549497538-303791108f95?auto=format&fit=crop&w=1200&q=60"
+      ],
+      "category": "Outdoor",
+      "detail": {
+        "with": 60,
+        "heght": 74,
+        "depth": 60,
+        "weight": 22,
+        "seatHeight": 45,
+        "legHeight": 44,
+        "countryOrigin": "China",
+        "capacity": 2,
+        "warranty": 12,
+        "maxLoadCapacity": 150,
+        "material": "Powder-coated steel",
+        "fillingMaterial": "N/A",
+        "upholsteryMaterial": "N/A"
+      }
+    },
+    {
+      "sku": "OUT-LNG-001",
+      "name": "Outdoor Lounge Chair",
+      "description": "Relaxed outdoor lounge chair with UV-resistant fabric and quick-dry cushion.",
+      "price": 349.0,
+      "stock": 9,
+      "tags": ["outdoor", "lounge", "chair"],
+      "colors": ["sand", "navy"],
+      "images": [
+        "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1200&q=60",
+        "https://images.unsplash.com/photo-1549187774-b4e9b0445b41?auto=format&fit=crop&w=1200&q=60"
+      ],
+      "category": "Outdoor",
+      "detail": {
+        "with": 75,
+        "heght": 85,
+        "depth": 85,
+        "weight": 16,
+        "seatHeight": 38,
+        "legHeight": 20,
+        "countryOrigin": "Vietnam",
+        "capacity": 1,
+        "warranty": 12,
+        "maxLoadCapacity": 120,
+        "material": "Aluminum frame",
+        "fillingMaterial": "Quick-dry foam",
+        "upholsteryMaterial": "Outdoor fabric"
+      }
+    },
+    {
+      "sku": "LGT-FL-001",
+      "name": "Arc Floor Lamp",
+      "description": "Statement arc floor lamp with warm light and a marble-look base.",
+      "price": 159.0,
+      "stock": 22,
+      "tags": ["lighting", "lamp", "floor"],
+      "colors": ["black", "gold"],
+      "images": [
+        "https://images.unsplash.com/photo-1540932239986-30128078f3c1?auto=format&fit=crop&w=1200&q=60",
+        "https://images.unsplash.com/photo-1540932239986-30128078f3c1?auto=format&fit=crop&w=1200&q=1200&q=60"
+      ],
+      "category": "Lighting",
+      "detail": {
+        "with": 35,
+        "heght": 170,
+        "depth": 110,
+        "weight": 9,
+        "seatHeight": 0,
+        "legHeight": 160,
+        "countryOrigin": "China",
+        "capacity": 0,
+        "warranty": 12,
+        "maxLoadCapacity": 0,
+        "material": "Steel + composite base",
+        "fillingMaterial": "N/A",
+        "upholsteryMaterial": "N/A"
+      }
+    },
+    {
+      "sku": "LGT-TB-001",
+      "name": "Ceramic Table Lamp",
+      "description": "Ceramic table lamp with fabric shade and soft ambient glow.",
+      "price": 79.0,
+      "stock": 35,
+      "tags": ["lighting", "lamp", "table"],
+      "colors": ["white", "sage"],
+      "images": [
+        "https://images.unsplash.com/photo-1540932239986-30128078f3c1?auto=format&fit=crop&w=1200&q=60",
+        "https://images.unsplash.com/photo-1549187774-b4e9b0445b41?auto=format&fit=crop&w=1200&q=60"
+      ],
+      "category": "Lighting",
+      "detail": {
+        "with": 28,
+        "heght": 48,
+        "depth": 28,
+        "weight": 3,
+        "seatHeight": 0,
+        "legHeight": 0,
+        "countryOrigin": "Portugal",
+        "capacity": 0,
+        "warranty": 12,
+        "maxLoadCapacity": 0,
+        "material": "Ceramic + fabric shade",
+        "fillingMaterial": "N/A",
+        "upholsteryMaterial": "N/A"
+      }
+    }
+  ]
+}
