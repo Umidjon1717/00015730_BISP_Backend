@@ -547,6 +547,355 @@
         "fillingMaterial": "N/A",
         "upholsteryMaterial": "N/A"
       }
+    },
+    {
+      "sku": "LIV-RUG-001",
+      "name": "Textured Area Rug (160x230)",
+      "description": "Soft textured rug that adds warmth and reduces echo in living spaces.",
+      "price": 139.0,
+      "stock": 26,
+      "tags": ["living", "rug", "textured"],
+      "colors": ["ivory", "sand"],
+      "images": [
+        "https://images.unsplash.com/photo-1615873968403-89e068629265?auto=format&fit=crop&w=1200&q=60",
+        "https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=1200&q=60"
+      ],
+      "category": "Living Room",
+      "detail": {
+        "with": 230,
+        "heght": 1,
+        "depth": 160,
+        "weight": 8,
+        "seatHeight": 0,
+        "legHeight": 0,
+        "countryOrigin": "India",
+        "capacity": 0,
+        "warranty": 12,
+        "maxLoadCapacity": 0,
+        "material": "Polypropylene",
+        "fillingMaterial": "N/A",
+        "upholsteryMaterial": "N/A"
+      }
+    },
+    {
+      "sku": "LIV-AC-001",
+      "name": "Accent Chair",
+      "description": "Compact accent chair with supportive cushion and a modern silhouette.",
+      "price": 289.0,
+      "stock": 16,
+      "tags": ["living", "chair", "accent"],
+      "colors": ["olive", "cream", "black"],
+      "images": [
+        "https://images.unsplash.com/photo-1549187774-b4e9b0445b41?auto=format&fit=crop&w=1200&q=60",
+        "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1200&q=60",
+        "https://images.unsplash.com/photo-1540574163026-643ea20ade25?auto=format&fit=crop&w=1200&q=60"
+      ],
+      "category": "Living Room",
+      "detail": {
+        "with": 75,
+        "heght": 85,
+        "depth": 78,
+        "weight": 15,
+        "seatHeight": 43,
+        "legHeight": 16,
+        "countryOrigin": "Turkey",
+        "capacity": 1,
+        "warranty": 12,
+        "maxLoadCapacity": 120,
+        "material": "Hardwood frame",
+        "fillingMaterial": "Foam",
+        "upholsteryMaterial": "Bouclé fabric"
+      }
+    },
+    {
+      "sku": "LIV-OT-001",
+      "name": "Storage Ottoman",
+      "description": "Lift-top ottoman with hidden storage for throws, remotes, and magazines.",
+      "price": 149.0,
+      "stock": 22,
+      "tags": ["living", "ottoman", "storage"],
+      "colors": ["gray", "tan"],
+      "images": [
+        "https://images.unsplash.com/photo-1540574163026-643ea20ade25?auto=format&fit=crop&w=1200&q=60",
+        "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=1200&q=60"
+      ],
+      "category": "Living Room",
+      "detail": {
+        "with": 90,
+        "heght": 45,
+        "depth": 55,
+        "weight": 14,
+        "seatHeight": 45,
+        "legHeight": 5,
+        "countryOrigin": "China",
+        "capacity": 1,
+        "warranty": 12,
+        "maxLoadCapacity": 120,
+        "material": "Plywood + fabric",
+        "fillingMaterial": "Foam",
+        "upholsteryMaterial": "Polyester fabric"
+      }
+    },
+    {
+      "sku": "BED-MAT-001",
+      "name": "Hybrid Mattress (Queen)",
+      "description": "Balanced hybrid mattress with pocket springs and pressure-relieving foam.",
+      "price": 599.0,
+      "stock": 12,
+      "tags": ["bedroom", "mattress", "sleep"],
+      "colors": ["white"],
+      "images": [
+        "https://images.unsplash.com/photo-1505693314120-0d443867891c?auto=format&fit=crop&w=1200&q=60",
+        "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1200&q=60"
+      ],
+      "category": "Bedroom",
+      "detail": {
+        "with": 160,
+        "heght": 28,
+        "depth": 200,
+        "weight": 34,
+        "seatHeight": 0,
+        "legHeight": 0,
+        "countryOrigin": "Poland",
+        "capacity": 2,
+        "warranty": 60,
+        "maxLoadCapacity": 300,
+        "material": "Pocket springs + foam",
+        "fillingMaterial": "Memory foam",
+        "upholsteryMaterial": "Knitted fabric cover"
+      }
+    },
+    {
+      "sku": "BED-WRD-001",
+      "name": "Wardrobe (2-Door)",
+      "description": "Minimal 2-door wardrobe with hanging rail and adjustable shelf.",
+      "price": 459.0,
+      "stock": 7,
+      "tags": ["bedroom", "wardrobe", "storage"],
+      "colors": ["white", "oak"],
+      "images": [
+        "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&w=1200&q=60",
+        "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=1200&q=60"
+      ],
+      "category": "Bedroom",
+      "detail": {
+        "with": 100,
+        "heght": 200,
+        "depth": 55,
+        "weight": 62,
+        "seatHeight": 0,
+        "legHeight": 8,
+        "countryOrigin": "Romania",
+        "capacity": 0,
+        "warranty": 24,
+        "maxLoadCapacity": 120,
+        "material": "Engineered wood",
+        "fillingMaterial": "N/A",
+        "upholsteryMaterial": "N/A"
+      }
+    },
+    {
+      "sku": "DIN-TBL-002",
+      "name": "Extendable Dining Table (4-6 seats)",
+      "description": "Extendable table that seats 4 daily and expands to 6 for guests.",
+      "price": 799.0,
+      "stock": 6,
+      "tags": ["dining", "table", "extendable"],
+      "colors": ["oak", "walnut"],
+      "images": [
+        "https://images.unsplash.com/photo-1549497538-303791108f95?auto=format&fit=crop&w=1200&q=60",
+        "https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=1200&q=60"
+      ],
+      "category": "Dining",
+      "detail": {
+        "with": 160,
+        "heght": 75,
+        "depth": 90,
+        "weight": 52,
+        "seatHeight": 0,
+        "legHeight": 70,
+        "countryOrigin": "Germany",
+        "capacity": 6,
+        "warranty": 24,
+        "maxLoadCapacity": 250,
+        "material": "Oak veneer",
+        "fillingMaterial": "N/A",
+        "upholsteryMaterial": "N/A"
+      }
+    },
+    {
+      "sku": "DIN-BAR-001",
+      "name": "Counter Stool (Set of 2)",
+      "description": "Set of two counter-height stools with footrest and comfortable seat.",
+      "price": 179.0,
+      "stock": 28,
+      "tags": ["dining", "stool", "counter"],
+      "colors": ["black", "tan"],
+      "images": [
+        "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=1200&q=60",
+        "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=1200&q=60"
+      ],
+      "category": "Dining",
+      "detail": {
+        "with": 42,
+        "heght": 92,
+        "depth": 48,
+        "weight": 6,
+        "seatHeight": 65,
+        "legHeight": 60,
+        "countryOrigin": "China",
+        "capacity": 1,
+        "warranty": 12,
+        "maxLoadCapacity": 120,
+        "material": "Steel + plywood seat",
+        "fillingMaterial": "Foam",
+        "upholsteryMaterial": "PU leather"
+      }
+    },
+    {
+      "sku": "OFF-DRW-001",
+      "name": "Mobile File Cabinet",
+      "description": "Lockable 3-drawer file cabinet with smooth casters that fit under most desks.",
+      "price": 129.0,
+      "stock": 20,
+      "tags": ["office", "storage", "file"],
+      "colors": ["black", "white"],
+      "images": [
+        "https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1200&q=60",
+        "https://images.unsplash.com/photo-1582582494700-5f934bfcc8f3?auto=format&fit=crop&w=1200&q=60"
+      ],
+      "category": "Office",
+      "detail": {
+        "with": 40,
+        "heght": 60,
+        "depth": 50,
+        "weight": 18,
+        "seatHeight": 0,
+        "legHeight": 6,
+        "countryOrigin": "China",
+        "capacity": 0,
+        "warranty": 12,
+        "maxLoadCapacity": 60,
+        "material": "Powder-coated steel",
+        "fillingMaterial": "N/A",
+        "upholsteryMaterial": "N/A"
+      }
+    },
+    {
+      "sku": "OFF-LMP-001",
+      "name": "LED Desk Lamp",
+      "description": "Adjustable LED desk lamp with dimmer and warm-to-cool color modes.",
+      "price": 49.0,
+      "stock": 45,
+      "tags": ["office", "lighting", "desk"],
+      "colors": ["black", "white"],
+      "images": [
+        "https://images.unsplash.com/photo-1540932239986-30128078f3c1?auto=format&fit=crop&w=1200&q=60",
+        "https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1200&q=60"
+      ],
+      "category": "Office",
+      "detail": {
+        "with": 18,
+        "heght": 45,
+        "depth": 18,
+        "weight": 1.2,
+        "seatHeight": 0,
+        "legHeight": 0,
+        "countryOrigin": "China",
+        "capacity": 0,
+        "warranty": 12,
+        "maxLoadCapacity": 0,
+        "material": "ABS + aluminum",
+        "fillingMaterial": "N/A",
+        "upholsteryMaterial": "N/A"
+      }
+    },
+    {
+      "sku": "OUT-TBL-001",
+      "name": "Outdoor Side Table",
+      "description": "Compact outdoor side table with weather-resistant finish and stable base.",
+      "price": 79.0,
+      "stock": 32,
+      "tags": ["outdoor", "table", "side"],
+      "colors": ["black", "white"],
+      "images": [
+        "https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=1200&q=60",
+        "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1200&q=60"
+      ],
+      "category": "Outdoor",
+      "detail": {
+        "with": 45,
+        "heght": 45,
+        "depth": 45,
+        "weight": 5,
+        "seatHeight": 0,
+        "legHeight": 42,
+        "countryOrigin": "Vietnam",
+        "capacity": 0,
+        "warranty": 12,
+        "maxLoadCapacity": 40,
+        "material": "Powder-coated steel",
+        "fillingMaterial": "N/A",
+        "upholsteryMaterial": "N/A"
+      }
+    },
+    {
+      "sku": "OUT-BEN-001",
+      "name": "Outdoor Bench (2-Seater)",
+      "description": "Simple 2-seater outdoor bench with slatted seat and rust-resistant frame.",
+      "price": 199.0,
+      "stock": 12,
+      "tags": ["outdoor", "bench", "patio"],
+      "colors": ["black", "teak"],
+      "images": [
+        "https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=1200&q=60",
+        "https://images.unsplash.com/photo-1549497538-303791108f95?auto=format&fit=crop&w=1200&q=60"
+      ],
+      "category": "Outdoor",
+      "detail": {
+        "with": 120,
+        "heght": 82,
+        "depth": 55,
+        "weight": 18,
+        "seatHeight": 45,
+        "legHeight": 42,
+        "countryOrigin": "Vietnam",
+        "capacity": 2,
+        "warranty": 12,
+        "maxLoadCapacity": 220,
+        "material": "Steel + wood slats",
+        "fillingMaterial": "N/A",
+        "upholsteryMaterial": "N/A"
+      }
+    },
+    {
+      "sku": "LGT-PEN-001",
+      "name": "Pendant Light (Matte Black)",
+      "description": "Minimal pendant light with matte black finish for kitchen islands and dining.",
+      "price": 99.0,
+      "stock": 18,
+      "tags": ["lighting", "pendant", "ceiling"],
+      "colors": ["black"],
+      "images": [
+        "https://images.unsplash.com/photo-1540932239986-30128078f3c1?auto=format&fit=crop&w=1200&q=60",
+        "https://images.unsplash.com/photo-1549187774-b4e9b0445b41?auto=format&fit=crop&w=1200&q=60"
+      ],
+      "category": "Lighting",
+      "detail": {
+        "with": 30,
+        "heght": 28,
+        "depth": 30,
+        "weight": 2.3,
+        "seatHeight": 0,
+        "legHeight": 0,
+        "countryOrigin": "China",
+        "capacity": 0,
+        "warranty": 24,
+        "maxLoadCapacity": 0,
+        "material": "Steel",
+        "fillingMaterial": "N/A",
+        "upholsteryMaterial": "N/A"
+      }
     }
   ]
 }
