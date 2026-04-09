@@ -1,5 +1,8 @@
 import { NestFactory } from '@nestjs/core';
-import cookieParser from 'cookie-parser';
+import type { RequestHandler } from 'express';
+
+/** CJS module; default import compiles to `.default` which is undefined here without `esModuleInterop`. */
+const cookieParser = require('cookie-parser') as () => RequestHandler;
 
 function logFatal(prefix: string, err: unknown) {
   const detail =
