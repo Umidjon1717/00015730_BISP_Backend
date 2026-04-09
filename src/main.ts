@@ -7,8 +7,23 @@ import { WinstonModule } from 'nest-winston';
 import { winstonConfig } from './common/logger/logger';
 import { AllExceptionsFilter } from './common/logger/ali-expression.logger';
 
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught exception:', error);
+});
+
+process.on('unhandledRejection', (reason) => {
+  console.error('Unhandled rejection:', reason);
+});
+
 async function start() {
   const PORT = process.env.PORT || 3000;
+  console.log('Boot probe:', {
+    node: process.version,
+    hasDatabaseUrl: Boolean(process.env.DATABASE_URL),
+    hasPgHost: Boolean(process.env.PG_HOST),
+    hasSmtpHost: Boolean(process.env.SMTP_HOST),
+    port: PORT,
+  });
   const app = await NestFactory.create(AppModule, {
     logger: WinstonModule.createLogger(winstonConfig),
   });
