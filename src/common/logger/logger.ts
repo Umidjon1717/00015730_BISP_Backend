@@ -13,6 +13,11 @@ const dailyRotateFileTransport = new winston.transports.DailyRotateFile({
   handleRejections: true,
 });
 
+const consoleTransport = new winston.transports.Console({
+  handleExceptions: true,
+  handleRejections: true,
+});
+
 export const winstonConfig = winston.createLogger({
   level: 'error',
   format: winston.format.combine(
@@ -21,5 +26,5 @@ export const winstonConfig = winston.createLogger({
       return `${timestamp} [${level}]: ${message}`;
     }),
   ),
-  transports: [dailyRotateFileTransport],
+  transports: [dailyRotateFileTransport, consoleTransport],
 });

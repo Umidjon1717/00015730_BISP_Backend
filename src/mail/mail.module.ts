@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { MailService } from './mail.service';
-import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { ConfigService } from '@nestjs/config';
 import { join } from 'path';
+import * as Handlebars from 'handlebars';
 
 @Module({
   imports: [
@@ -18,12 +18,16 @@ import { join } from 'path';
           },
         },
         defaults: {
-          from: `Furnishing ${config.get<string>('SMTP_HOST')}`,
+          from: `Furnishing <${config.get<string>('SMTP_USER')}>`,
         },
         template: {
           dir: join(__dirname, 'templates'),
-          adapter: new HandlebarsAdapter(),
-          template: 'confirm',
+          adapter: {
+            compile: (templateString: string, context: any) => {
+              const template = Handlebars.compile(templateString);
+              return template(context);
+            },
+          },
           options: {
             strict: true,
           },

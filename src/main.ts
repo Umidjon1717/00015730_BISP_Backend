@@ -44,4 +44,7 @@ async function start() {
   );
 }
 
-start();
+start().catch((error) => {
+  console.error('Application bootstrap failed:', error);
+  process.exit(1);
+});

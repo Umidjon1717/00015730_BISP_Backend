@@ -29,11 +29,15 @@ import { ReviewModule } from './review/review.module';
     CacheModule.register({ isGlobal: true }),
     TypeOrmModule.forRoot({
       type: 'postgres',
+      url: process.env.DATABASE_URL || undefined,
       host: process.env.PG_HOST,
       port: +process.env.PG_PORT,
       username: process.env.PG_USER,
       password: process.env.PG_PASS,
       database: process.env.PG_DB,
+      ssl: process.env.DATABASE_URL
+        ? { rejectUnauthorized: false }
+        : undefined,
       synchronize: true,
       entities: [join(__dirname, '**/*.entity.{ts,js}')],
       logging: true,
