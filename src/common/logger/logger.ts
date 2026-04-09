@@ -4,10 +4,7 @@ import { existsSync, mkdirSync } from 'fs';
 
 const logDir = 'logs';
 
-const consoleTransport = new winston.transports.Console({
-  handleExceptions: true,
-  handleRejections: true,
-});
+const consoleTransport = new winston.transports.Console();
 
 const transports: winston.transport[] = [consoleTransport];
 
@@ -23,8 +20,6 @@ try {
       zippedArchive: true,
       maxSize: '20m',
       maxFiles: '14d',
-      handleExceptions: true,
-      handleRejections: true,
     }),
   );
 } catch (error) {
@@ -32,6 +27,7 @@ try {
 }
 
 export const winstonConfig = winston.createLogger({
+  exitOnError: false,
   level: 'error',
   format: winston.format.combine(
     winston.format.timestamp(),

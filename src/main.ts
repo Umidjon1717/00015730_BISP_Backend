@@ -1,40 +1,43 @@
 import { NestFactory } from '@nestjs/core';
 import cookieParser from 'cookie-parser';
 
+function logFatal(prefix: string, err: unknown) {
+  const detail =
+    err instanceof Error ? `${err.message}\n${err.stack}` : String(err);
+  process.stderr.write(`${prefix}\n${detail}\n`);
+}
+
 process.on('uncaughtException', (error) => {
-  console.error('Uncaught exception:', error);
+  logFatal('Uncaught exception:', error);
 });
 
 process.on('unhandledRejection', (reason) => {
-  console.error('Unhandled rejection:', reason);
+  logFatal('Unhandled rejection:', reason);
 });
 
 async function start() {
-  const PORT = process.env.PORT || 3000;
+  const port = Number(process.env.PORT) || 3000;
   console.log('Boot probe: entrypoint reached');
   console.log('Boot probe:', {
     node: process.version,
     hasDatabaseUrl: Boolean(process.env.DATABASE_URL),
     hasPgHost: Boolean(process.env.PG_HOST),
     hasSmtpHost: Boolean(process.env.SMTP_HOST),
-    port: PORT,
+    port,
   });
 
-  const [
-    { AppModule },
-    { DocumentBuilder, SwaggerModule },
-    { ValidationPipe },
-    { WinstonModule },
-    { winstonConfig },
-    { AllExceptionsFilter },
-  ] = await Promise.all([
-    import('./app.module'),
-    import('@nestjs/swagger'),
-    import('@nestjs/common'),
-    import('nest-winston'),
-    import('./common/logger/logger'),
-    import('./common/logger/ali-expression.logger'),
-  ]);
+  console.log('Bootstrap: loading AppModule');
+  const { AppModule } = await import('./app.module');
+  console.log('Bootstrap: loading swagger, common, winston, logger');
+  const [{ DocumentBuilder, SwaggerModule }, { ValidationPipe }, { WinstonModule }, { winstonConfig }, { AllExceptionsFilter }] =
+    await Promise.all([
+      import('@nestjs/swagger'),
+      import('@nestjs/common'),
+      import('nest-winston'),
+      import('./common/logger/logger'),
+      import('./common/logger/ali-expression.logger'),
+    ]);
+  console.log('Bootstrap: creating Nest application');
 
   const app = await NestFactory.create(AppModule, {
     logger: WinstonModule.createLogger(winstonConfig),
@@ -66,12 +69,12 @@ async function start() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);
 
-  await app.listen(PORT, () =>
-    console.log(`Server running at http://localhost:${PORT}`),
+  await app.listen(port, () =>
+    console.log(`Server running at http://localhost:${port}`),
   );
 }
 
 start().catch((error) => {
-  console.error('Application bootstrap failed:', error);
+  logFatal('Application bootstrap failed:', error);
   process.exit(1);
 });
