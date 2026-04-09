@@ -22,6 +22,7 @@ import { RatingModule } from './rating/rating.module';
 import { CategoryModule } from './category/category.module';
 import { LikeModule } from './like/like.module';
 import { ReviewModule } from './review/review.module';
+import { AppController } from './app.controller';
 import { parse } from 'pg-connection-string';
 
 const databaseUrl = process.env.DATABASE_URL;
@@ -93,7 +94,7 @@ const typeOrmOptions = databaseUrl
     LikeModule,
     ReviewModule,
   ],
-  controllers: [],
+  controllers: [AppController],
   providers: [],
 })
 export class AppModule {}

@@ -7,13 +7,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  FindOptionsOrder,
-  FindOptionsWhere,
-  Like,
-  MoreThan,
-  Repository,
-} from 'typeorm';
+import { Brackets, Repository } from 'typeorm';
 import { PaginationDto } from '../admin/dto/pagination.dto';
 import { createApiResponse } from '../common/utils';
 import { Category } from '../category/entities/category.entity';
@@ -56,15 +50,10 @@ export class ProductService {
   }
 
   async findAll(query: PaginationDto, token: string) {
-    const {
-      filter,
-      order = 'desc',
-      page = 1,
-      limit = 10,
-      priceOrder,
-      categoryId,
-    } = query;
+    const { filter, order = 'desc', priceOrder, categoryId } = query;
 
+    const page = Math.max(1, Number(query.page) || 1);
+    const limit = Math.min(100, Math.max(1, Number(query.limit) || 10));
     const skip = (page - 1) * limit;
 
     let likedProductIds = [];
@@ -79,40 +68,48 @@ export class ProductService {
         }
       } catch (error) {}
     }
-    const where: FindOptionsWhere<any>[] = [{ stock: MoreThan(0) }];
 
-    if (filter) {
-      where.push(
-        { name: Like(`%${filter}%`) },
-        { description: Like(`%${filter}%`) },
+    const qb = this.ProductRepo.createQueryBuilder('product')
+      .leftJoinAndSelect('product.discount', 'discount')
+      .where('product.stock > 0');
+
+    if (categoryId !== undefined && categoryId !== null) {
+      const cid = Number(categoryId);
+      if (!Number.isNaN(cid)) {
+        qb.andWhere('product.categoryId = :categoryId', { categoryId: cid });
+      }
+    }
+
+    if (filter?.trim()) {
+      const f = `%${filter.trim()}%`;
+      qb.andWhere(
+        new Brackets((q) => {
+          q.where('product.name ILIKE :f', { f }).orWhere(
+            'product.description ILIKE :f',
+            { f },
+          );
+        }),
       );
     }
 
-    if (categoryId) {
-      where.push({ categoryId });
+    if (priceOrder) {
+      qb.orderBy(
+        'product.price',
+        priceOrder.toUpperCase() === 'ASC' ? 'ASC' : 'DESC',
+      ).addOrderBy(
+        'product.createdAt',
+        order.toUpperCase() === 'ASC' ? 'ASC' : 'DESC',
+      );
+    } else {
+      qb.orderBy(
+        'product.createdAt',
+        order.toUpperCase() === 'ASC' ? 'ASC' : 'DESC',
+      );
     }
 
-    const orderBy: FindOptionsOrder<any> = priceOrder
-      ? {
-          price: priceOrder.toUpperCase() === 'ASC' ? 'ASC' : 'DESC',
-          createdAt: order.toUpperCase() === 'ASC' ? 'ASC' : 'DESC',
-        }
-      : {
-          createdAt: order.toUpperCase() === 'ASC' ? 'ASC' : 'DESC',
-        };
+    qb.skip(skip).take(limit);
 
-    const [products, total] = await this.ProductRepo.findAndCount({
-      where: where.length ? where : undefined,
-      order: orderBy,
-      skip,
-      take: limit,
-      relations: ['discount'],
-      select: {
-        discount: {
-          percent: true,
-        },
-      },
-    });
+    const [products, total] = await qb.getManyAndCount();
 
     const productsWithLikes = products.map((product) => {
       const discountedPrice = product.discount
