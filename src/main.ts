@@ -1,11 +1,4 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { ValidationPipe } from '@nestjs/common';
-import cookieParser from 'cookie-parser';
-import { WinstonModule } from 'nest-winston';
-import { winstonConfig } from './common/logger/logger';
-import { AllExceptionsFilter } from './common/logger/ali-expression.logger';
 
 process.on('uncaughtException', (error) => {
   console.error('Uncaught exception:', error);
@@ -17,6 +10,7 @@ process.on('unhandledRejection', (reason) => {
 
 async function start() {
   const PORT = process.env.PORT || 3000;
+  console.log('Boot probe: entrypoint reached');
   console.log('Boot probe:', {
     node: process.version,
     hasDatabaseUrl: Boolean(process.env.DATABASE_URL),
@@ -24,6 +18,25 @@ async function start() {
     hasSmtpHost: Boolean(process.env.SMTP_HOST),
     port: PORT,
   });
+
+  const [
+    { AppModule },
+    { DocumentBuilder, SwaggerModule },
+    { ValidationPipe },
+    { default: cookieParser },
+    { WinstonModule },
+    { winstonConfig },
+    { AllExceptionsFilter },
+  ] = await Promise.all([
+    import('./app.module'),
+    import('@nestjs/swagger'),
+    import('@nestjs/common'),
+    import('cookie-parser'),
+    import('nest-winston'),
+    import('./common/logger/logger'),
+    import('./common/logger/ali-expression.logger'),
+  ]);
+
   const app = await NestFactory.create(AppModule, {
     logger: WinstonModule.createLogger(winstonConfig),
   });
