@@ -22,18 +22,37 @@ import { RatingModule } from './rating/rating.module';
 import { CategoryModule } from './category/category.module';
 import { LikeModule } from './like/like.module';
 import { ReviewModule } from './review/review.module';
+import { parse } from 'pg-connection-string';
 
 const databaseUrl = process.env.DATABASE_URL;
+
+function typeOrmFromDatabaseUrl(url: string) {
+  const parsed = parse(url);
+  const host = parsed.host ?? undefined;
+  if (!host) {
+    throw new Error('DATABASE_URL is missing a host');
+  }
+  const port = parsed.port ? Number(parsed.port) : 5432;
+
+  return {
+    type: 'postgres' as const,
+    host,
+    port: Number.isFinite(port) ? port : 5432,
+    username: parsed.user,
+    password: parsed.password,
+    database: parsed.database ?? undefined,
+    // Render Postgres uses a cert Node treats as self-signed when sslmode comes
+    // from the URL. Use explicit fields + this ssl object (do not pass `url`).
+    ssl: { rejectUnauthorized: false },
+    synchronize: true,
+    entities: [join(__dirname, '**/*.entity.{ts,js}')],
+    logging: true,
+    autoLoadEntities: true,
+  };
+}
+
 const typeOrmOptions = databaseUrl
-  ? {
-      type: 'postgres' as const,
-      url: databaseUrl,
-      ssl: { rejectUnauthorized: false },
-      synchronize: true,
-      entities: [join(__dirname, '**/*.entity.{ts,js}')],
-      logging: true,
-      autoLoadEntities: true,
-    }
+  ? typeOrmFromDatabaseUrl(databaseUrl)
   : {
       type: 'postgres' as const,
       host: process.env.PG_HOST,
