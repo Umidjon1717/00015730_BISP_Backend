@@ -8,7 +8,7 @@ import { winstonConfig } from './common/logger/logger';
 import { AllExceptionsFilter } from './common/logger/ali-expression.logger';
 
 async function start() {
-  const PORT = process.env.PORT || 3333;
+  const PORT = process.env.PORT || 3000;
   const app = await NestFactory.create(AppModule, {
     logger: WinstonModule.createLogger(winstonConfig),
   });
