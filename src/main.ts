@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core';
+import cookieParser from 'cookie-parser';
 
 process.on('uncaughtException', (error) => {
   console.error('Uncaught exception:', error);
@@ -23,7 +24,6 @@ async function start() {
     { AppModule },
     { DocumentBuilder, SwaggerModule },
     { ValidationPipe },
-    { default: cookieParser },
     { WinstonModule },
     { winstonConfig },
     { AllExceptionsFilter },
@@ -31,7 +31,6 @@ async function start() {
     import('./app.module'),
     import('@nestjs/swagger'),
     import('@nestjs/common'),
-    import('cookie-parser'),
     import('nest-winston'),
     import('./common/logger/logger'),
     import('./common/logger/ali-expression.logger'),
