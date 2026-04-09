@@ -23,26 +23,35 @@ import { CategoryModule } from './category/category.module';
 import { LikeModule } from './like/like.module';
 import { ReviewModule } from './review/review.module';
 
-@Module({
-  imports: [
-    ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
-    CacheModule.register({ isGlobal: true }),
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      url: process.env.DATABASE_URL || undefined,
-      host: process.env.PG_HOST,
-      port: +process.env.PG_PORT,
-      username: process.env.PG_USER,
-      password: process.env.PG_PASS,
-      database: process.env.PG_DB,
-      ssl: process.env.DATABASE_URL
-        ? { rejectUnauthorized: false }
-        : undefined,
+const databaseUrl = process.env.DATABASE_URL;
+const typeOrmOptions = databaseUrl
+  ? {
+      type: 'postgres' as const,
+      url: databaseUrl,
+      ssl: { rejectUnauthorized: false },
       synchronize: true,
       entities: [join(__dirname, '**/*.entity.{ts,js}')],
       logging: true,
       autoLoadEntities: true,
-    }),
+    }
+  : {
+      type: 'postgres' as const,
+      host: process.env.PG_HOST,
+      port: process.env.PG_PORT ? +process.env.PG_PORT : 5432,
+      username: process.env.PG_USER,
+      password: process.env.PG_PASS,
+      database: process.env.PG_DB,
+      synchronize: true,
+      entities: [join(__dirname, '**/*.entity.{ts,js}')],
+      logging: true,
+      autoLoadEntities: true,
+    };
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
+    CacheModule.register({ isGlobal: true }),
+    TypeOrmModule.forRoot(typeOrmOptions),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'uploads'),
     }),
