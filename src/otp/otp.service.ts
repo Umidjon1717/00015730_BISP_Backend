@@ -34,6 +34,13 @@ export class OtpService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
+  private normalizeOtp(input: string): string {
+    const digits = String(input ?? '').replace(/\D/g, '');
+    if (!digits) return '';
+    if (digits.length >= 4) return digits.slice(0, 4);
+    return digits.padStart(4, '0');
+  }
+
   private async safeCacheSet(key: string, value: string, ttlMs: number) {
     try {
       await this.cacheManager.set(key, value, ttlMs);
@@ -116,29 +123,34 @@ export class OtpService {
 
   async verifyOtp(verifyOtpDto: VerifyOtpDto, res: Response) {
     const { otp, email } = verifyOtpDto;
+    const normalizedOtp = this.normalizeOtp(otp);
 
     const currentTime = new Date();
-    const data: any = await this.safeCacheGet(otp);
+    const data: any = await this.safeCacheGet(normalizedOtp);
     const customer = await this.customerRepo.findOneBy({ email: email });
 
     if (!customer) {
       throw new BadRequestException('Customer not found');
     }
 
-    if (!data) {
-      throw new BadRequestException('Code incorrect');
+    let resultOtp: Otp | null = null;
+    if (data) {
+      const decodedData = await decode(data);
+      const details = JSON.parse(decodedData);
+      if (details.email !== email) {
+        throw new BadRequestException('OTP has not been sent to this email');
+      }
+      resultOtp = await this.otpRepo.findOne({
+        where: { id: details.otp_id },
+      });
+    } else {
+      // Fallback when cache is unavailable/restarted: verify by latest OTP in DB.
+      resultOtp = await this.otpRepo.findOne({
+        where: { email, verified: false },
+        order: { expiration_time: 'DESC' },
+      });
     }
 
-    const decodedData = await decode(data);
-    const details = JSON.parse(decodedData);
-
-    if (details.email !== email) {
-      throw new BadRequestException('OTP has not been sent to this email');
-    }
-
-    const resultOtp = await this.otpRepo.findOne({
-      where: { id: details.otp_id },
-    });
     if (!resultOtp) {
       throw new BadRequestException('This OTP not found');
     }
@@ -151,13 +163,13 @@ export class OtpService {
       throw new BadRequestException('This OTP has expired');
     }
 
-    if (resultOtp.otp !== otp) {
+    if (this.normalizeOtp(resultOtp.otp) !== normalizedOtp) {
       throw new BadRequestException('OTP does not match');
     }
 
     await this.customerRepo.update({ email }, { is_active: true });
-    await this.otpRepo.update({ id: details.otp_id }, { verified: true });
-    await this.safeCacheDel(otp);
+    await this.otpRepo.update({ id: resultOtp.id }, { verified: true });
+    await this.safeCacheDel(normalizedOtp);
 
     const { access_token, refresh_token } =
       await this.customerGenerateTokens(customer);
