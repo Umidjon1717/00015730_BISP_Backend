@@ -22,6 +22,8 @@ import { MailService } from '../../mail/mail.service';
 import { ResetPasswordDto } from '../dto/reset-password.dto';
 import { OtpService } from '../../otp/otp.service';
 
+const resetFallbackCache = new Map<string, { value: string; expiresAt: number }>();
+
 @Injectable()
 export class CustomerAuthService {
   constructor(
@@ -32,6 +34,37 @@ export class CustomerAuthService {
     private readonly otpService: OtpService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
+
+  private async safeCacheSet(key: string, value: string, ttlMs: number) {
+    try {
+      await this.cacheManager.set(key, value, ttlMs);
+      return;
+    } catch (_error) {
+      resetFallbackCache.set(key, { value, expiresAt: Date.now() + ttlMs });
+    }
+  }
+
+  private async safeCacheGet(key: string) {
+    try {
+      return await this.cacheManager.get<string>(key);
+    } catch (_error) {
+      const record = resetFallbackCache.get(key);
+      if (!record) return null;
+      if (record.expiresAt <= Date.now()) {
+        resetFallbackCache.delete(key);
+        return null;
+      }
+      return record.value;
+    }
+  }
+
+  private async safeCacheDel(key: string) {
+    try {
+      await this.cacheManager.del(key);
+    } catch (_error) {
+      resetFallbackCache.delete(key);
+    }
+  }
 
   async customerGenerateTokens(customer: Customer) {
     const payload = {
@@ -200,11 +233,7 @@ export class CustomerAuthService {
         expiresIn: '1h',
       });
 
-      await this.cacheManager.set(
-        `reset-password-${customer.id}`,
-        token,
-        3600000,
-      );
+      await this.safeCacheSet(`reset-password-${customer.id}`, token, 3600000);
 
       return {
         message: 'Password ready to change',
@@ -234,7 +263,7 @@ export class CustomerAuthService {
       throw new NotFoundException('Customer not found');
     }
 
-    const cachedToken: string = await this.cacheManager.get(
+    const cachedToken: string = await this.safeCacheGet(
       `reset-password-${customer.id}`,
     );
     if (!cachedToken) {
@@ -259,7 +288,7 @@ export class CustomerAuthService {
     customer.hashed_password = hashed_password;
     await this.customerRepo.save(customer);
 
-    await this.cacheManager.del(`reset-password-${customer.id}`);
+    await this.safeCacheDel(`reset-password-${customer.id}`);
 
     return {
       message: 'Password has been successfully reset',

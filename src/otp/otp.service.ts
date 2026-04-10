@@ -22,6 +22,8 @@ import { Cache } from 'cache-manager';
 import { hash } from 'bcrypt';
 import { Response } from 'express';
 
+const otpFallbackCache = new Map<string, { value: string; expiresAt: number }>();
+
 @Injectable()
 export class OtpService {
   constructor(
@@ -31,6 +33,37 @@ export class OtpService {
     private readonly jwtService: JwtService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
+
+  private async safeCacheSet(key: string, value: string, ttlMs: number) {
+    try {
+      await this.cacheManager.set(key, value, ttlMs);
+      return;
+    } catch (_error) {
+      otpFallbackCache.set(key, { value, expiresAt: Date.now() + ttlMs });
+    }
+  }
+
+  private async safeCacheGet(key: string) {
+    try {
+      return await this.cacheManager.get<string>(key);
+    } catch (_error) {
+      const record = otpFallbackCache.get(key);
+      if (!record) return null;
+      if (record.expiresAt <= Date.now()) {
+        otpFallbackCache.delete(key);
+        return null;
+      }
+      return record.value;
+    }
+  }
+
+  private async safeCacheDel(key: string) {
+    try {
+      await this.cacheManager.del(key);
+    } catch (_error) {
+      otpFallbackCache.delete(key);
+    }
+  }
 
   async create(createOtpDto: CreateOtpDto) {
     const { email } = createOtpDto;
@@ -74,7 +107,7 @@ export class OtpService {
       );
     }
 
-    await this.cacheManager.set(otp, encodedData, 180000);
+    await this.safeCacheSet(otp, encodedData, 180000);
     return {
       id: customer.id,
       SMS: 'OTP code sent to your email',
@@ -85,7 +118,7 @@ export class OtpService {
     const { otp, email } = verifyOtpDto;
 
     const currentTime = new Date();
-    const data: any = await this.cacheManager.get(otp);
+    const data: any = await this.safeCacheGet(otp);
     const customer = await this.customerRepo.findOneBy({ email: email });
 
     if (!customer) {
@@ -124,7 +157,7 @@ export class OtpService {
 
     await this.customerRepo.update({ email }, { is_active: true });
     await this.otpRepo.update({ id: details.otp_id }, { verified: true });
-    await this.cacheManager.del(otp);
+    await this.safeCacheDel(otp);
 
     const { access_token, refresh_token } =
       await this.customerGenerateTokens(customer);
