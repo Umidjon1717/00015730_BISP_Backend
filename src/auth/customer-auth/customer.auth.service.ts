@@ -20,6 +20,7 @@ import { CustomerSignInDto } from '../dto/customer-signin.dto';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { MailService } from '../../mail/mail.service';
 import { ResetPasswordDto } from '../dto/reset-password.dto';
+import { OtpService } from '../../otp/otp.service';
 
 @Injectable()
 export class CustomerAuthService {
@@ -28,6 +29,7 @@ export class CustomerAuthService {
     private readonly customerService: CustomerService,
     private readonly jwtService: JwtService,
     private readonly mailService: MailService,
+    private readonly otpService: OtpService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
@@ -93,6 +95,8 @@ export class CustomerAuthService {
     if (!customer) {
       throw new BadRequestException('Failed to create customer');
     }
+
+    await this.otpService.create({ email: customer.email });
 
     const newCustomer = await this.customerRepo.findOneBy({ id: customer.id });
     return createApiResponse(201, 'Customer signed up successfully', {

@@ -11,5 +11,6 @@ import { JwtModule } from '@nestjs/jwt';
   imports: [TypeOrmModule.forFeature([Otp, Customer]), MailModule, JwtModule],
   controllers: [OtpController],
   providers: [OtpService],
+  exports: [OtpService],
 })
 export class OtpModule {}

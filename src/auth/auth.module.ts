@@ -10,6 +10,7 @@ import { CustomerAuthService } from './customer-auth/customer.auth.service';
 import { Customer } from '../customer/entities/customer.entity';
 import { CustomerModule } from '../customer/customer.module';
 import { MailModule } from '../mail/mail.module';
+import { OtpModule } from '../otp/otp.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { MailModule } from '../mail/mail.module';
     TypeOrmModule.forFeature([Admin, Customer]),
     CustomerModule,
     MailModule,
+    OtpModule,
   ],
   controllers: [AdminAuthController, CustomerAuthController],
   providers: [AdminAuthService, CustomerAuthService],
