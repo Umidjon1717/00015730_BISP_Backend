@@ -22,6 +22,7 @@ import { MailService } from '../../mail/mail.service';
 import { ResetPasswordDto } from '../dto/reset-password.dto';
 
 const resetFallbackCache = new Map<string, { value: string; expiresAt: number }>();
+const DEFAULT_COOKIE_MAX_AGE = 15 * 24 * 60 * 60 * 1000;
 
 @Injectable()
 export class CustomerAuthService {
@@ -62,6 +63,13 @@ export class CustomerAuthService {
     } catch (_error) {
       resetFallbackCache.delete(key);
     }
+  }
+
+  private getCookieMaxAge(): number {
+    const parsed = Number(process.env.COOKIE_TIME);
+    return Number.isFinite(parsed) && parsed > 0
+      ? parsed
+      : DEFAULT_COOKIE_MAX_AGE;
   }
 
   async customerGenerateTokens(customer: Customer) {
@@ -149,7 +157,7 @@ export class CustomerAuthService {
 
     res.cookie('refresh_token', refresh_token, {
       httpOnly: true,
-      maxAge: +process.env.COOKIE_TIME,
+      maxAge: this.getCookieMaxAge(),
     });
 
     const response = {
@@ -186,7 +194,7 @@ export class CustomerAuthService {
       await this.customerGenerateTokens(customer);
     res.cookie('refresh_token', newRefreshToken, {
       httpOnly: true,
-      maxAge: +process.env.COOKIE_TIME,
+      maxAge: this.getCookieMaxAge(),
     });
 
     const response = {

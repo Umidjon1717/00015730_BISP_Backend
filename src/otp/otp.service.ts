@@ -23,6 +23,7 @@ import { hash } from 'bcrypt';
 import { Response } from 'express';
 
 const otpFallbackCache = new Map<string, { value: string; expiresAt: number }>();
+const DEFAULT_COOKIE_MAX_AGE = 15 * 24 * 60 * 60 * 1000;
 
 @Injectable()
 export class OtpService {
@@ -39,6 +40,13 @@ export class OtpService {
     if (!digits) return '';
     if (digits.length >= 4) return digits.slice(0, 4);
     return digits.padStart(4, '0');
+  }
+
+  private getCookieMaxAge(): number {
+    const parsed = Number(process.env.COOKIE_TIME);
+    return Number.isFinite(parsed) && parsed > 0
+      ? parsed
+      : DEFAULT_COOKIE_MAX_AGE;
   }
 
   private async safeCacheSet(key: string, value: string, ttlMs: number) {
@@ -214,7 +222,7 @@ export class OtpService {
     const newCustomer = await this.customerRepo.findOneBy({ id: customer.id });
     res.cookie('refresh_token', refresh_token, {
       httpOnly: true,
-      maxAge: Number(process.env.COOKIE_TIME),
+      maxAge: this.getCookieMaxAge(),
     });
     return {
       message: 'You have been activated',

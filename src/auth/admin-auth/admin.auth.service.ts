@@ -18,6 +18,8 @@ import { CreateAdminDto } from '../../admin/dto/create-admin.dto';
 import { createApiResponse } from '../../common/utils';
 import { AdminSignInDto } from '../dto/admin-signin.dto';
 
+const DEFAULT_COOKIE_MAX_AGE = 15 * 24 * 60 * 60 * 1000;
+
 @Injectable()
 export class AdminAuthService {
   constructor(
@@ -25,6 +27,13 @@ export class AdminAuthService {
     private readonly jwtService: JwtService,
     @InjectRepository(Admin) private adminRepo: Repository<Admin>,
   ) {}
+
+  private getCookieMaxAge(): number {
+    const parsed = Number(process.env.COOKIE_TIME);
+    return Number.isFinite(parsed) && parsed > 0
+      ? parsed
+      : DEFAULT_COOKIE_MAX_AGE;
+  }
 
   async adminGenerateTokens(admin: Admin): Promise<Tokens> {
     const payload: AdminJwtPayload = {
@@ -60,7 +69,7 @@ export class AdminAuthService {
     }
     res.cookie('admin_refresh_token', refresh_token, {
       httpOnly: true,
-      maxAge: +process.env.COOKIE_TIME,
+      maxAge: this.getCookieMaxAge(),
     });
     const newAdmin = {
       id: admin.id,
@@ -91,7 +100,7 @@ export class AdminAuthService {
       await this.adminGenerateTokens(admin);
     res.cookie('admin_refresh_token', refresh_token, {
       httpOnly: true,
-      maxAge: +process.env.COOKIE_TIME,
+      maxAge: this.getCookieMaxAge(),
     });
     const response = {
       id: admin.id,
@@ -124,7 +133,7 @@ export class AdminAuthService {
       await this.adminGenerateTokens(admin);
     res.cookie('admin_refresh_token', refresh_token, {
       httpOnly: true,
-      maxAge: +process.env.COOKIE_TIME,
+      maxAge: this.getCookieMaxAge(),
     });
     const response = {
       id: admin.id,
