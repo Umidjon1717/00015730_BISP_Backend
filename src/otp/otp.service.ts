@@ -152,6 +152,13 @@ export class OtpService {
     }
 
     if (!resultOtp) {
+      resultOtp = await this.otpRepo.findOne({
+        where: { email, verified: false, otp: normalizedOtp },
+        order: { expiration_time: 'DESC' },
+      });
+    }
+
+    if (!resultOtp) {
       throw new BadRequestException('This OTP not found');
     }
 
