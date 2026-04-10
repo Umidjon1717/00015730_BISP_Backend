@@ -8,15 +8,26 @@ import * as Handlebars from 'handlebars';
 @Module({
   imports: [
     MailerModule.forRootAsync({
-      useFactory: async (config: ConfigService) => ({
-        transport: {
-          host: config.get<string>('SMTP_HOST'),
-          secure: false,
-          auth: {
-            user: config.get<string>('SMTP_USER'),
-            pass: config.get<string>('SMTP_PASSWORD'),
+      useFactory: async (config: ConfigService) => {
+        const host = config.get<string>('SMTP_HOST');
+        const user = config.get<string>('SMTP_USER');
+        const pass = config.get<string>('SMTP_PASSWORD');
+        const port = Number(config.get<string>('SMTP_PORT') ?? 587);
+
+        return {
+          transport: {
+            host,
+            port,
+            secure: port === 465,
+            requireTLS: port === 587,
+            auth: {
+              user,
+              pass,
+            },
+            tls: {
+              rejectUnauthorized: false,
+            },
           },
-        },
         defaults: {
           from: `Furnishing <${config.get<string>('SMTP_USER')}>`,
         },
@@ -32,7 +43,8 @@ import * as Handlebars from 'handlebars';
             strict: true,
           },
         },
-      }),
+      };
+      },
       inject: [ConfigService],
     }),
   ],
