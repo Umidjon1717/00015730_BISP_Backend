@@ -11,13 +11,22 @@ export class MailService {
       await this.mailerService.sendMail({
         to: customer.email,
         subject: 'Welcome to our furnishing site',
-        template: './confirm',
-        context: {
-          first_name: customer.first_name,
-          otp,
-        },
+        html: `
+          <h1 style="color:#4CAF50;font-size:28px;text-align:center;font-family:Arial,sans-serif;">
+            Hello, ${customer.first_name}
+          </h1>
+          <h2 style="font-size:20px;color:#555;text-align:center;font-family:Arial,sans-serif;">
+            Please enter the OTP code to activate your account.
+          </h2>
+          <h3 style="color:#3d3d3d;font-size:28px;text-align:center;font-family:Arial,sans-serif;margin-top:20px;">
+            ${otp}
+          </h3>
+        `,
+        text: `Hello ${customer.first_name}, your OTP code is ${otp}.`,
       });
     } catch (error) {
+      // Keep detailed reason in server logs while returning a safe message to clients.
+      console.error('OTP email send failed:', error);
       throw new InternalServerErrorException('Failed to send OTP email');
     }
   }
