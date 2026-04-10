@@ -50,6 +50,34 @@ function requiredEnv(name: string): string {
   return value;
 }
 
+function normalizeRenderHost(host: string): string {
+  if (host.includes('.')) return host;
+  if (host.startsWith('dpg-')) return `${host}.oregon-postgres.render.com`;
+  return host;
+}
+
+function loadDbConfig() {
+  const databaseUrl = process.env.DATABASE_URL;
+  if (databaseUrl) {
+    const parsed = new URL(databaseUrl);
+    return {
+      host: normalizeRenderHost(parsed.hostname),
+      port: Number(parsed.port || 5432),
+      user: decodeURIComponent(parsed.username),
+      pass: decodeURIComponent(parsed.password),
+      db: parsed.pathname.replace(/^\//, ''),
+    };
+  }
+
+  return {
+    host: normalizeRenderHost(requiredEnv('PG_HOST')),
+    port: Number(requiredEnv('PG_PORT')),
+    user: requiredEnv('PG_USER'),
+    pass: requiredEnv('PG_PASS'),
+    db: requiredEnv('PG_DB'),
+  };
+}
+
 async function main() {
   dotenv.config({ path: join(__dirname, '..', '..', '.env') });
 
@@ -61,11 +89,8 @@ async function main() {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const { ProductDetail } = require('../productDetail/entities/productDetail.entity');
 
-  const pgHost = requiredEnv('PG_HOST');
-  const pgPort = Number(requiredEnv('PG_PORT'));
-  const pgUser = requiredEnv('PG_USER');
-  const pgPass = requiredEnv('PG_PASS');
-  const pgDb = requiredEnv('PG_DB');
+  const { host: pgHost, port: pgPort, user: pgUser, pass: pgPass, db: pgDb } =
+    loadDbConfig();
 
   const dataSource = new DataSource({
     type: 'postgres',
@@ -74,6 +99,7 @@ async function main() {
     username: pgUser,
     password: pgPass,
     database: pgDb,
+    ssl: { rejectUnauthorized: false },
     synchronize: true,
     logging: false,
     entities: [join(__dirname, '..', '**/*.entity.{ts,js}')],
@@ -90,6 +116,7 @@ async function main() {
         user: pgUser,
         password: pgPass,
         database: 'postgres',
+        ssl: { rejectUnauthorized: false },
       });
       await admin.connect();
       await admin.query(`CREATE DATABASE "${pgDb}"`);
