@@ -8,6 +8,7 @@ import { OrderService } from './order.service';
 import { OrderAddressesModule } from '../order_addresses/order_addresses.module';
 import { OrderDetailModule } from '../order_detail/order_detail.module';
 import { Product } from '../product/entities/product.entity';
+import { TelegramModule } from '../telegram/telegram.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { Product } from '../product/entities/product.entity';
     JwtModule,
     OrderAddressesModule,
     OrderDetailModule,
+    TelegramModule,
   ],
   controllers: [OrderController],
   providers: [OrderService],

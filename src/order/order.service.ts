@@ -15,6 +15,7 @@ import { OrderAddressesService } from '../order_addresses/order_addresses.servic
 import { OrderDetailService } from '../order_detail/order_detail.service';
 import { Product } from '../product/entities/product.entity';
 import { CreateOrderAddressDto } from '../order_addresses/dto/create-order_address.dto';
+import { TelegramService } from '../telegram/telegram.service';
 
 @Injectable()
 export class OrderService {
@@ -26,6 +27,7 @@ export class OrderService {
     private readonly customerRepo: Repository<Customer>,
     private readonly orderAddressService: OrderAddressesService,
     private readonly orderDetailService: OrderDetailService,
+    private readonly telegramService: TelegramService,
   ) {}
 
   async create(orderDto: OrderDto) {
@@ -116,6 +118,17 @@ export class OrderService {
       new_address,
       order_details: new_order_details,
     };
+
+    try {
+      await this.telegramService.sendOrderMessage({
+        orderId: order.id,
+        customerId,
+        totalPrice: Number(total_price),
+        itemCount: order_details.length,
+      });
+    } catch (_error) {
+      // Do not fail order creation if Telegram is unavailable.
+    }
 
     return createApiResponse(201, 'Order created successfully', { result });
   }
