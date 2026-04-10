@@ -88,6 +88,26 @@ export class OtpService {
     });
 
     const now = new Date();
+    const existingOtp = await this.otpRepo.findOne({
+      where: { email: customer.email, verified: false },
+      order: { expiration_time: 'DESC' },
+    });
+
+    // Prevent duplicate OTP invalidation when frontend triggers OTP twice.
+    if (existingOtp && existingOtp.expiration_time > now) {
+      const existingDetails = {
+        time: now,
+        email: customer.email,
+        otp_id: existingOtp.id,
+      };
+      const existingEncodedData = await encode(JSON.stringify(existingDetails));
+      await this.safeCacheSet(existingOtp.otp, existingEncodedData, 180000);
+      return {
+        id: customer.id,
+        SMS: 'OTP code already sent. Please use the latest one from your email',
+      };
+    }
+
     const expiration_time = AddMinutesToDate(now, 3);
     await this.otpRepo.delete({ email: customer.email });
 
@@ -135,14 +155,18 @@ export class OtpService {
 
     let resultOtp: Otp | null = null;
     if (data) {
-      const decodedData = await decode(data);
-      const details = JSON.parse(decodedData);
-      if (details.email !== email) {
-        throw new BadRequestException('OTP has not been sent to this email');
+      try {
+        const decodedData = await decode(data);
+        const details = JSON.parse(decodedData);
+        if (details.email !== email) {
+          throw new BadRequestException('OTP has not been sent to this email');
+        }
+        resultOtp = await this.otpRepo.findOne({
+          where: { id: details.otp_id },
+        });
+      } catch (_error) {
+        resultOtp = null;
       }
-      resultOtp = await this.otpRepo.findOne({
-        where: { id: details.otp_id },
-      });
     } else {
       // Fallback when cache is unavailable/restarted: verify by latest OTP in DB.
       resultOtp = await this.otpRepo.findOne({
