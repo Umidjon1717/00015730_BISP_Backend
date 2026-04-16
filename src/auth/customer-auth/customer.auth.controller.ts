@@ -20,6 +20,7 @@ import { CustomerSignInDto } from '../dto/customer-signin.dto';
 import { CustomerRefreshTokenGuard } from '../../common/guards/customer.refreshtoken.guard';
 import { ForgotPasswordDto } from '../dto/forgot-password.dto';
 import { ResetPasswordDto } from '../dto/reset-password.dto';
+import { GoogleSignInDto } from '../dto/google-signin.dto';
 
 @ApiTags('Customer Auth')
 @Controller('customer/auth')
@@ -113,5 +114,19 @@ export class CustomerAuthController {
   @HttpCode(HttpStatus.OK)
   async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
     return this.customerAuthService.resetPassword(resetPasswordDto);
+  }
+
+  @Post('google')
+  @ApiOperation({ summary: 'Customer sign in with Google' })
+  @ApiResponse({
+    status: 200,
+    description: 'Customer signed in successfully with Google',
+  })
+  @HttpCode(HttpStatus.OK)
+  async googleSignIn(
+    @Res({ passthrough: true }) res: Response,
+    @Body() googleSignInDto: GoogleSignInDto,
+  ) {
+    return this.customerAuthService.googleSignIn(res, googleSignInDto);
   }
 }

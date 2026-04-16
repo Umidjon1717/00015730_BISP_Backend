@@ -52,7 +52,8 @@ async function start() {
 
   app.use(cookieParser());
 
-  app.enableCors({ origin: '*' });
+  // Allow browser clients on other origins to receive/set cookies (refresh_token).
+  app.enableCors({ origin: true, credentials: true });
 
   const config = new DocumentBuilder()
     .addBearerAuth({

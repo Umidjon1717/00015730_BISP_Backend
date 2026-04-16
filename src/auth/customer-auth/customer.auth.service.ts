@@ -10,6 +10,7 @@ import {
 import { Cache } from 'cache-manager';
 import { JwtService } from '@nestjs/jwt';
 import { compare, hash } from 'bcrypt';
+import { randomBytes } from 'crypto';
 import { generate } from 'otp-generator';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -22,6 +23,8 @@ import { CustomerSignInDto } from '../dto/customer-signin.dto';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { MailService } from '../../mail/mail.service';
 import { ResetPasswordDto } from '../dto/reset-password.dto';
+import { GoogleSignInDto } from '../dto/google-signin.dto';
+import { OAuth2Client } from 'google-auth-library';
 
 const resetFallbackCache = new Map<string, { value: string; expiresAt: number }>();
 const DEFAULT_COOKIE_MAX_AGE = 15 * 24 * 60 * 60 * 1000;
@@ -78,6 +81,20 @@ export class CustomerAuthService {
     // Backward compatible fallback: older deployments might not have
     // RESET_PASSWORD_SECRET, but ACCESS_TOKEN_KEY is already configured.
     return process.env.RESET_PASSWORD_SECRET ?? process.env.ACCESS_TOKEN_KEY;
+  }
+
+  private getGoogleClientId(): string {
+    const id = process.env.GOOGLE_CLIENT_ID;
+    if (!id) {
+      throw new InternalServerErrorException(
+        'GOOGLE_CLIENT_ID is not configured',
+      );
+    }
+    return id;
+  }
+
+  private getGoogleClient(): OAuth2Client {
+    return new OAuth2Client(this.getGoogleClientId());
   }
 
   async customerGenerateTokens(customer: Customer) {
@@ -175,6 +192,83 @@ export class CustomerAuthService {
     };
     await this.updateRefreshToken(customer.id, refresh_token);
     return createApiResponse(200, 'Customer signed in successfully', response);
+  }
+
+  async googleSignIn(res: Response, googleSignInDto: GoogleSignInDto) {
+    const { idToken } = googleSignInDto;
+
+    const client = this.getGoogleClient();
+    let payload:
+      | {
+          email?: string;
+          email_verified?: boolean;
+          given_name?: string;
+          family_name?: string;
+        }
+      | undefined;
+
+    try {
+      const ticket = await client.verifyIdToken({
+        idToken,
+        audience: this.getGoogleClientId(),
+      });
+      payload = ticket.getPayload() ?? undefined;
+    } catch (_error) {
+      throw new UnauthorizedException('Invalid Google token');
+    }
+
+    const email = payload?.email;
+    if (!email) {
+      throw new BadRequestException('Google account email is missing');
+    }
+    if (payload?.email_verified === false) {
+      throw new UnauthorizedException('Google email is not verified');
+    }
+
+    let customer = await this.customerRepo.findOneBy({ email });
+
+    if (!customer) {
+      const firstName = payload?.given_name?.trim() || 'Google';
+      const lastName = payload?.family_name?.trim() || 'User';
+      const randomPassword = randomBytes(32).toString('hex');
+      const hashed_password = await hash(randomPassword, 7);
+
+      customer = await this.customerRepo.save({
+        email,
+        first_name: firstName,
+        last_name: lastName,
+        phone_number: '',
+        hashed_password,
+        is_active: true,
+      });
+    } else {
+      // Treat Google sign-in as verified/activated.
+      if (!customer.is_active) {
+        customer.is_active = true;
+      }
+      if (!customer.first_name && payload?.given_name) {
+        customer.first_name = payload.given_name;
+      }
+      if (!customer.last_name && payload?.family_name) {
+        customer.last_name = payload.family_name;
+      }
+      await this.customerRepo.save(customer);
+    }
+
+    const { access_token, refresh_token } =
+      await this.customerGenerateTokens(customer);
+
+    res.cookie('refresh_token', refresh_token, {
+      httpOnly: true,
+      maxAge: this.getCookieMaxAge(),
+    });
+
+    await this.updateRefreshToken(customer.id, refresh_token);
+    return createApiResponse(200, 'Customer signed in successfully', {
+      id: customer.id,
+      access_token,
+      is_active: customer.is_active,
+    });
   }
 
   async handleRefreshToken(res: Response, req: Request) {
