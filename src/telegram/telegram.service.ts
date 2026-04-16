@@ -71,4 +71,20 @@ export class TelegramService {
 
     return this.sendRaw(text);
   }
+
+  async sendOrderCancelledMessage(payload: {
+    orderId: number;
+    customerId: number;
+    totalPrice: number;
+  }): Promise<boolean> {
+    const text = [
+      '<b>Order Cancelled</b>',
+      '',
+      `<b>Order ID:</b> ${payload.orderId}`,
+      `<b>Customer ID:</b> ${payload.customerId}`,
+      `<b>Total Price:</b> ${payload.totalPrice}`,
+    ].join('\n');
+
+    return this.sendRaw(text);
+  }
 }

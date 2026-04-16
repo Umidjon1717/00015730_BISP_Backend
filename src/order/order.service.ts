@@ -16,6 +16,7 @@ import { OrderDetailService } from '../order_detail/order_detail.service';
 import { Product } from '../product/entities/product.entity';
 import { CreateOrderAddressDto } from '../order_addresses/dto/create-order_address.dto';
 import { TelegramService } from '../telegram/telegram.service';
+import { OrderStatus } from '../common/types/order_status';
 
 @Injectable()
 export class OrderService {
@@ -222,10 +223,26 @@ export class OrderService {
       throw new NotFoundException(`Order with id ${id} not found`);
     }
 
+    const isCancelledNow =
+      existingOrder.status !== OrderStatus.CANCELLED &&
+      updateOrderDto.status === OrderStatus.CANCELLED;
+
     await this.orderRepo.update(id, updateOrderDto);
     const updatedOrder = await this.orderRepo.findOne({
       where: { id },
     });
+
+    if (updatedOrder && isCancelledNow) {
+      try {
+        await this.telegramService.sendOrderCancelledMessage({
+          orderId: updatedOrder.id,
+          customerId: updatedOrder.customerId,
+          totalPrice: Number(updatedOrder.total_price),
+        });
+      } catch (_error) {
+        // Do not fail the order update if Telegram is unavailable.
+      }
+    }
 
     return createApiResponse(200, 'Order updated successfully', {
       updatedOrder,
