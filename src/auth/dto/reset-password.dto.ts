@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsString, IsStrongPassword, Length, Matches } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsString, IsStrongPassword, Matches } from 'class-validator';
 
 export class ResetPasswordDto {
   @ApiProperty({
@@ -39,4 +39,14 @@ export class ResetPasswordDto {
     minSymbols: 0,
   })
   readonly confirm_password: string;
+
+  @ApiProperty({
+    required: false,
+    description: '4-digit OTP code sent to your email',
+    example: '1234',
+  })
+  @IsOptional()
+  @IsString()
+  @Matches(/^\d{4}$/, { message: 'OTP must be exactly 4 digits' })
+  readonly otp?: string;
 }

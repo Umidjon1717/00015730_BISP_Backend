@@ -30,4 +30,30 @@ export class MailService {
       throw new InternalServerErrorException('Failed to send OTP email');
     }
   }
+
+  async sendResetPasswordMail(customer: Customer, otp: string) {
+    try {
+      await this.mailerService.sendMail({
+        to: customer.email,
+        subject: 'Reset your Furnishing account password',
+        html: `
+          <h1 style="color:#4CAF50;font-size:26px;text-align:center;font-family:Arial,sans-serif;">
+            Reset your password
+          </h1>
+          <h2 style="font-size:18px;color:#555;text-align:center;font-family:Arial,sans-serif;">
+            Hi ${customer.first_name}, use the code below to reset your password.
+          </h2>
+          <h3 style="color:#3d3d3d;font-size:28px;text-align:center;font-family:Arial,sans-serif;margin-top:20px;">
+            ${otp}
+          </h3>
+        `,
+        text: `Hi ${customer.first_name}, your password reset code is ${otp}.`,
+      });
+    } catch (error) {
+      console.error('Password reset email send failed:', error);
+      throw new InternalServerErrorException(
+        'Failed to send password reset email',
+      );
+    }
+  }
 }

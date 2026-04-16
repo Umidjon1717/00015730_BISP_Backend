@@ -3,12 +3,14 @@ import {
   ForbiddenException,
   Inject,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { Cache } from 'cache-manager';
 import { JwtService } from '@nestjs/jwt';
 import { compare, hash } from 'bcrypt';
+import { generate } from 'otp-generator';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Customer } from '../../customer/entities/customer.entity';
@@ -70,6 +72,12 @@ export class CustomerAuthService {
     return Number.isFinite(parsed) && parsed > 0
       ? parsed
       : DEFAULT_COOKIE_MAX_AGE;
+  }
+
+  private getResetPasswordSecret(): string {
+    // Backward compatible fallback: older deployments might not have
+    // RESET_PASSWORD_SECRET, but ACCESS_TOKEN_KEY is already configured.
+    return process.env.RESET_PASSWORD_SECRET ?? process.env.ACCESS_TOKEN_KEY;
   }
 
   async customerGenerateTokens(customer: Customer) {
@@ -231,30 +239,53 @@ export class CustomerAuthService {
         throw new NotFoundException('Customer not found');
       }
 
+      const resetSecret = this.getResetPasswordSecret();
+      if (!resetSecret) {
+        throw new InternalServerErrorException(
+          'Reset password secret is not configured',
+        );
+      }
+
       const payload = { email: customer.email, id: customer.id };
       const token = this.jwtService.sign(payload, {
-        secret: process.env.RESET_PASSWORD_SECRET,
+        secret: resetSecret,
         expiresIn: '1h',
       });
 
       await this.safeCacheSet(`reset-password-${customer.id}`, token, 3600000);
 
+      // Create a short reset code and email it to the user.
+      const otp = generate(4, {
+        upperCaseAlphabets: false,
+        lowerCaseAlphabets: false,
+        specialChars: false,
+        digits: true,
+      });
+
+      await this.safeCacheSet(
+        `reset-password-otp-${customer.id}`,
+        otp,
+        3600000,
+      );
+
+      await this.mailService.sendResetPasswordMail(customer, otp);
+
       return {
-        message: 'Password ready to change',
+        message: 'Password reset code sent to your email',
       };
     } catch (error) {
       console.error('Error during forgot password process:', error);
       if (error instanceof NotFoundException) {
         throw error;
       }
-      throw new BadRequestException(
-        'Error occurred while sending reset link to the email for password reset',
+      throw new InternalServerErrorException(
+        'Failed to send password reset code to your email',
       );
     }
   }
 
   async resetPassword(resetPasswordDto: ResetPasswordDto) {
-    const { confirm_password, email, password } = resetPasswordDto;
+    const { confirm_password, email, password, otp } = resetPasswordDto;
 
     if (confirm_password !== password) {
       throw new BadRequestException(
@@ -267,24 +298,42 @@ export class CustomerAuthService {
       throw new NotFoundException('Customer not found');
     }
 
-    const cachedToken: string = await this.safeCacheGet(
-      `reset-password-${customer.id}`,
-    );
-    if (!cachedToken) {
-      throw new BadRequestException('Password reset link expired or invalid');
-    }
+    // Prefer OTP verification when provided (intended flow).
+    if (otp) {
+      const cachedOtp: string = await this.safeCacheGet(
+        `reset-password-otp-${customer.id}`,
+      );
+      if (!cachedOtp || cachedOtp !== otp) {
+        throw new BadRequestException('Invalid or expired OTP');
+      }
+    } else {
+      // Backward compatible JWT verification fallback.
+      const resetSecret = this.getResetPasswordSecret();
+      if (!resetSecret) {
+        throw new InternalServerErrorException(
+          'Reset password secret is not configured',
+        );
+      }
 
-    let decodedToken: any;
-    try {
-      decodedToken = this.jwtService.verify(cachedToken, {
-        secret: process.env.RESET_PASSWORD_SECRET,
-      });
-    } catch (error) {
-      throw new BadRequestException('Invalid or expired reset token');
-    }
+      const cachedToken: string = await this.safeCacheGet(
+        `reset-password-${customer.id}`,
+      );
+      if (!cachedToken) {
+        throw new BadRequestException('Password reset link expired or invalid');
+      }
 
-    if (decodedToken.email !== email) {
-      throw new BadRequestException('Email mismatch');
+      let decodedToken: any;
+      try {
+        decodedToken = this.jwtService.verify(cachedToken, {
+          secret: resetSecret,
+        });
+      } catch (_error) {
+        throw new BadRequestException('Invalid or expired reset token');
+      }
+
+      if (decodedToken.email !== email) {
+        throw new BadRequestException('Email mismatch');
+      }
     }
 
     const hashed_password = await hash(password, 7);
@@ -293,6 +342,7 @@ export class CustomerAuthService {
     await this.customerRepo.save(customer);
 
     await this.safeCacheDel(`reset-password-${customer.id}`);
+    await this.safeCacheDel(`reset-password-otp-${customer.id}`);
 
     return {
       message: 'Password has been successfully reset',
