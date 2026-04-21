@@ -26,7 +26,10 @@ import { ResetPasswordDto } from '../dto/reset-password.dto';
 import { GoogleSignInDto } from '../dto/google-signin.dto';
 import { OAuth2Client } from 'google-auth-library';
 
-const resetFallbackCache = new Map<string, { value: string; expiresAt: number }>();
+const resetFallbackCache = new Map<
+  string,
+  { value: string; expiresAt: number }
+>();
 const DEFAULT_COOKIE_MAX_AGE = 15 * 24 * 60 * 60 * 1000;
 
 @Injectable()
@@ -43,6 +46,7 @@ export class CustomerAuthService {
     try {
       await this.cacheManager.set(key, value, ttlMs);
       return;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_error) {
       resetFallbackCache.set(key, { value, expiresAt: Date.now() + ttlMs });
     }
@@ -51,6 +55,7 @@ export class CustomerAuthService {
   private async safeCacheGet(key: string) {
     try {
       return await this.cacheManager.get<string>(key);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_error) {
       const record = resetFallbackCache.get(key);
       if (!record) return null;
@@ -65,6 +70,7 @@ export class CustomerAuthService {
   private async safeCacheDel(key: string) {
     try {
       await this.cacheManager.del(key);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_error) {
       resetFallbackCache.delete(key);
     }
@@ -150,6 +156,7 @@ export class CustomerAuthService {
       };
 
       return { message: 'Token is valid', statusCode: 200, customer };
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       throw new UnauthorizedException('Token invalid or expired');
     }
@@ -213,6 +220,7 @@ export class CustomerAuthService {
         audience: this.getGoogleClientId(),
       });
       payload = ticket.getPayload() ?? undefined;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_error) {
       throw new UnauthorizedException('Invalid Google token');
     }
@@ -421,6 +429,7 @@ export class CustomerAuthService {
         decodedToken = this.jwtService.verify(cachedToken, {
           secret: resetSecret,
         });
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (_error) {
         throw new BadRequestException('Invalid or expired reset token');
       }

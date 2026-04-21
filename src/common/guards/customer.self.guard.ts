@@ -34,6 +34,7 @@ export class CustomerSelfGuard implements CanActivate {
       payload = this.jwtService.verify(token, {
         secret: process.env.ACCESS_TOKEN_KEY,
       });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {
       adminPayload = this.jwtService.verify(token, {
         secret: process.env.ADMIN_ACCESS_TOKEN_KEY,

@@ -52,7 +52,6 @@ export class CreateProductDetailDto {
   @MaxLength(100)
   readonly countryOrigin: string;
 
-
   @ApiProperty({ description: 'Capacity of the product', example: 4 })
   @IsInt()
   @IsPositive()

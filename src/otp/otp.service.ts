@@ -22,7 +22,10 @@ import { Cache } from 'cache-manager';
 import { hash } from 'bcrypt';
 import { Response } from 'express';
 
-const otpFallbackCache = new Map<string, { value: string; expiresAt: number }>();
+const otpFallbackCache = new Map<
+  string,
+  { value: string; expiresAt: number }
+>();
 const DEFAULT_COOKIE_MAX_AGE = 15 * 24 * 60 * 60 * 1000;
 
 @Injectable()
@@ -53,6 +56,7 @@ export class OtpService {
     try {
       await this.cacheManager.set(key, value, ttlMs);
       return;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_error) {
       otpFallbackCache.set(key, { value, expiresAt: Date.now() + ttlMs });
     }
@@ -61,6 +65,7 @@ export class OtpService {
   private async safeCacheGet(key: string) {
     try {
       return await this.cacheManager.get<string>(key);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_error) {
       const record = otpFallbackCache.get(key);
       if (!record) return null;
@@ -75,6 +80,7 @@ export class OtpService {
   private async safeCacheDel(key: string) {
     try {
       await this.cacheManager.del(key);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_error) {
       otpFallbackCache.delete(key);
     }
@@ -172,6 +178,7 @@ export class OtpService {
         resultOtp = await this.otpRepo.findOne({
           where: { id: details.otp_id },
         });
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (_error) {
         resultOtp = null;
       }

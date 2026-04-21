@@ -56,7 +56,9 @@ export class CustomerService {
     if (!customer) {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
-    return createApiResponse(200, 'Customer retrieved successfully', { customer });
+    return createApiResponse(200, 'Customer retrieved successfully', {
+      customer,
+    });
   }
 
   async update(id: number, updateCustomerDto: UpdateCustomerDto) {

@@ -43,8 +43,6 @@ function typeOrmFromDatabaseUrl(url: string) {
     username: parsed.user,
     password: parsed.password,
     database: parsed.database ?? undefined,
-    // Render Postgres uses a cert Node treats as self-signed when sslmode comes
-    // from the URL. Use explicit fields + this ssl object (do not pass `url`).
     ssl: { rejectUnauthorized: false },
     synchronize: true,
     entities: [join(__dirname, '**/*.entity.{ts,js}')],

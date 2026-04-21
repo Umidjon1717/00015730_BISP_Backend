@@ -66,6 +66,7 @@ export class ProductService {
           });
           likedProductIds = likes.map((like) => like.productId);
         }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {}
     }
 

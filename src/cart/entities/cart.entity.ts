@@ -6,7 +6,6 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { CartDetail } from '../../cart_detail/entities/cart_detail.entity';
-import { Product } from '../../product/entities/product.entity';
 import { Customer } from '../../customer/entities/customer.entity';
 
 @Entity('cart')

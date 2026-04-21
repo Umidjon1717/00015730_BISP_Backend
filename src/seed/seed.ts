@@ -82,15 +82,23 @@ async function main() {
   dotenv.config({ path: join(__dirname, '..', '..', '.env') });
 
   // Import entities directly (avoid Nest bootstrapping for a simple seed script)
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
   const { Category } = require('../category/entities/category.entity');
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
   const { Product } = require('../product/entities/product.entity');
   // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const { ProductDetail } = require('../productDetail/entities/productDetail.entity');
+  const {
+    ProductDetail,
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+  } = require('../productDetail/entities/productDetail.entity');
 
-  const { host: pgHost, port: pgPort, user: pgUser, pass: pgPass, db: pgDb } =
-    loadDbConfig();
+  const {
+    host: pgHost,
+    port: pgPort,
+    user: pgUser,
+    pass: pgPass,
+    db: pgDb,
+  } = loadDbConfig();
 
   const dataSource = new DataSource({
     type: 'postgres',
@@ -133,9 +141,8 @@ async function main() {
 
   const categoryRepo = dataSource.getRepository<typeof Category>(Category);
   const productRepo = dataSource.getRepository<typeof Product>(Product);
-  const productDetailRepo = dataSource.getRepository<typeof ProductDetail>(
-    ProductDetail,
-  );
+  const productDetailRepo =
+    dataSource.getRepository<typeof ProductDetail>(ProductDetail);
 
   const categoryByName = new Map<string, any>();
   for (const c of seed.categories) {
@@ -206,4 +213,3 @@ main().catch((err) => {
   console.error(err);
   process.exitCode = 1;
 });
-

@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["jest"],
+    "esModuleInterop": true
+  },
+  "include": [
+    "test/**/*.ts",
+    "src/**/*.ts",
+    "**/*.spec.ts",
+    "**/*.e2e-spec.ts"
+  ],
+  "exclude": ["node_modules"]
+}

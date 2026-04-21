@@ -28,22 +28,22 @@ import * as Handlebars from 'handlebars';
               rejectUnauthorized: false,
             },
           },
-        defaults: {
-          from: `Furnishing <${config.get<string>('SMTP_USER')}>`,
-        },
-        template: {
-          dir: join(__dirname, 'templates'),
-          adapter: {
-            compile: (templateString: string, context: any) => {
-              const template = Handlebars.compile(templateString);
-              return template(context);
+          defaults: {
+            from: `Furnishing <${config.get<string>('SMTP_USER')}>`,
+          },
+          template: {
+            dir: join(__dirname, 'templates'),
+            adapter: {
+              compile: (templateString: string, context: any) => {
+                const template = Handlebars.compile(templateString);
+                return template(context);
+              },
+            },
+            options: {
+              strict: true,
             },
           },
-          options: {
-            strict: true,
-          },
-        },
-      };
+        };
       },
       inject: [ConfigService],
     }),

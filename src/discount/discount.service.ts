@@ -46,7 +46,7 @@ export class DiscountService {
     return createApiResponse(
       200,
       `Discount with id ${id} retrieved successfully`,
-      {discount},
+      { discount },
     );
   }
 
@@ -59,7 +59,9 @@ export class DiscountService {
     await this.discountRepo.update(id, updateDiscountDto);
     const updatedDis = await this.discountRepo.findOne({ where: { id } });
 
-    return createApiResponse(200, 'Discount updated successfully', {updatedDis});
+    return createApiResponse(200, 'Discount updated successfully', {
+      updatedDis,
+    });
   }
 
   async remove(id: number) {

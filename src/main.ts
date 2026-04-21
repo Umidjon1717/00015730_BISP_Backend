@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import type { RequestHandler } from 'express';
 
 /** CJS module; default import compiles to `.default` which is undefined here without `esModuleInterop`. */
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const cookieParser = require('cookie-parser') as () => RequestHandler;
 
 function logFatal(prefix: string, err: unknown) {
@@ -32,14 +33,19 @@ async function start() {
   console.log('Bootstrap: loading AppModule');
   const { AppModule } = await import('./app.module');
   console.log('Bootstrap: loading swagger, common, winston, logger');
-  const [{ DocumentBuilder, SwaggerModule }, { ValidationPipe }, { WinstonModule }, { winstonConfig }, { AllExceptionsFilter }] =
-    await Promise.all([
-      import('@nestjs/swagger'),
-      import('@nestjs/common'),
-      import('nest-winston'),
-      import('./common/logger/logger'),
-      import('./common/logger/ali-expression.logger'),
-    ]);
+  const [
+    { DocumentBuilder, SwaggerModule },
+    { ValidationPipe },
+    { WinstonModule },
+    { winstonConfig },
+    { AllExceptionsFilter },
+  ] = await Promise.all([
+    import('@nestjs/swagger'),
+    import('@nestjs/common'),
+    import('nest-winston'),
+    import('./common/logger/logger'),
+    import('./common/logger/ali-expression.logger'),
+  ]);
   console.log('Bootstrap: creating Nest application');
 
   const app = await NestFactory.create(AppModule, {

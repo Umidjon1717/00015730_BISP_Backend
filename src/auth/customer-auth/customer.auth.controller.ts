@@ -7,7 +7,6 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  Query,
   Req,
   Res,
   UseGuards,
@@ -15,7 +14,12 @@ import {
 import { CustomerAuthService } from './customer.auth.service';
 import { Request, Response } from 'express';
 import { CreateCustomerDto } from '../../customer/dto/create-customer.dto';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { CustomerSignInDto } from '../dto/customer-signin.dto';
 import { CustomerRefreshTokenGuard } from '../../common/guards/customer.refreshtoken.guard';
 import { ForgotPasswordDto } from '../dto/forgot-password.dto';

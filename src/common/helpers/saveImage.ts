@@ -30,7 +30,11 @@ export function deleteFiles(fileNames: string[]) {
   try {
     fileNames.forEach((fileName) => {
       const filePath = path.join(
-        __dirname, '..', '..', '..', 'uploads',
+        __dirname,
+        '..',
+        '..',
+        '..',
+        'uploads',
         fileName,
       );
       if (fs.existsSync(filePath)) {

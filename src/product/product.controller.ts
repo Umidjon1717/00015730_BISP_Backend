@@ -13,7 +13,13 @@ import {
   Patch,
   Headers,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiQuery,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { ProductService } from './product.service';
 import { PaginationDto } from '../admin/dto/pagination.dto';
 import { AdminAccessTokenGuard } from '../common/guards/admin.access-token.guard';

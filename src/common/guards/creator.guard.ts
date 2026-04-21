@@ -32,6 +32,7 @@ export class IsCreatorGuard implements CanActivate {
       payload = this.jwtService.verify(token, {
         secret: process.env.ADMIN_ACCESS_TOKEN_KEY,
       });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {
       throw new UnauthorizedException('Invalid or expired token');
     }

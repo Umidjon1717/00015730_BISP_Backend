@@ -2,7 +2,9 @@ import { PartialType } from '@nestjs/mapped-types';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { CreateProductDetailDto } from './create-productDetail.dto';
 
-export class UpdateProductDetailDto extends PartialType(CreateProductDetailDto) {
+export class UpdateProductDetailDto extends PartialType(
+  CreateProductDetailDto,
+) {
   @ApiPropertyOptional({ description: 'Product ID', example: 1 })
   productId?: number;
 
@@ -27,24 +29,42 @@ export class UpdateProductDetailDto extends PartialType(CreateProductDetailDto) 
   @ApiPropertyOptional({ description: 'Country of origin', example: 'Italy' })
   countryOrigin?: string;
 
-  @ApiPropertyOptional({ description: 'Array of tags associated with the product', example: [101, 102, 103] })
+  @ApiPropertyOptional({
+    description: 'Array of tags associated with the product',
+    example: [101, 102, 103],
+  })
   tags?: number[];
 
   @ApiPropertyOptional({ description: 'Capacity of the product', example: 4 })
   capacity?: number;
 
-  @ApiPropertyOptional({ description: 'Warranty period in months', example: 24 })
+  @ApiPropertyOptional({
+    description: 'Warranty period in months',
+    example: 24,
+  })
   warranty?: number;
 
-  @ApiPropertyOptional({ description: 'Maximum load capacity in kg', example: 150 })
+  @ApiPropertyOptional({
+    description: 'Maximum load capacity in kg',
+    example: 150,
+  })
   maxLoadCapacity?: number;
 
-  @ApiPropertyOptional({ description: 'Primary material of the product', example: 'Wood' })
+  @ApiPropertyOptional({
+    description: 'Primary material of the product',
+    example: 'Wood',
+  })
   material?: string;
 
-  @ApiPropertyOptional({ description: 'Filling material of the product', example: 'Foam' })
+  @ApiPropertyOptional({
+    description: 'Filling material of the product',
+    example: 'Foam',
+  })
   fillingMaterial?: string;
 
-  @ApiPropertyOptional({ description: 'Upholstery material of the product', example: 'Leather' })
+  @ApiPropertyOptional({
+    description: 'Upholstery material of the product',
+    example: 'Leather',
+  })
   upholsteryMaterial?: string;
 }

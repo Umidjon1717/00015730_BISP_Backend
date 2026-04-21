@@ -14,7 +14,6 @@ import { OrderDto } from './dto/order.dto';
 import { OrderAddressesService } from '../order_addresses/order_addresses.service';
 import { OrderDetailService } from '../order_detail/order_detail.service';
 import { Product } from '../product/entities/product.entity';
-import { CreateOrderAddressDto } from '../order_addresses/dto/create-order_address.dto';
 import { TelegramService } from '../telegram/telegram.service';
 import { OrderStatus } from '../common/types/order_status';
 
@@ -127,6 +126,7 @@ export class OrderService {
         totalPrice: Number(total_price),
         itemCount: order_details.length,
       });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_error) {
       // Do not fail order creation if Telegram is unavailable.
     }
@@ -239,6 +239,7 @@ export class OrderService {
           customerId: updatedOrder.customerId,
           totalPrice: Number(updatedOrder.total_price),
         });
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (_error) {
         // Do not fail the order update if Telegram is unavailable.
       }

@@ -41,6 +41,6 @@ export class OtpController {
     @Body() verifyOtpDto: VerifyOtpDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    return this.otpService.verifyOtp(verifyOtpDto,res);
+    return this.otpService.verifyOtp(verifyOtpDto, res);
   }
 }

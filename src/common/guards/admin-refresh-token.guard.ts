@@ -27,7 +27,7 @@ export class AdminRefreshTokenGuard implements CanActivate {
     }
     verifyToken['admin_refresh_token'] = refresh_token;
     request.user = verifyToken;
-    
+
     return true;
   }
 }
