@@ -1,5 +1,5 @@
 import { MailerService } from '@nestjs-modules/mailer';
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { Customer } from '../customer/entities/customer.entity';
 
 @Injectable()
@@ -7,7 +7,14 @@ export class MailService {
   constructor(private readonly mailerService: MailerService) {}
 
   async sendMail(customer: Customer, otp: string) {
-    await this.mailerService.sendMail({
+    const timeout = new Promise<void>((_, reject) =>
+      setTimeout(
+        () => reject(new InternalServerErrorException('Email send timed out')), 
+        15000,
+      ),
+    );
+
+    const sendPromise = this.mailerService.sendMail({
       to: customer.email,
       subject: 'Welcome to our furnishing site',
       template: './confirm',
@@ -16,5 +23,7 @@ export class MailService {
         otp,
       },
     });
+
+    return Promise.race([sendPromise, timeout]);
   }
 }

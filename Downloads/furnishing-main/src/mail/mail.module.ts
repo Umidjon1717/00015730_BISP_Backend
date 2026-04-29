@@ -11,11 +11,14 @@ import { join } from 'path';
       useFactory: async (config: ConfigService) => ({
         transport: {
           host: config.get<string>('SMTP_HOST'),
-          secure: false,
+          secure: config.get<boolean>('SMTP_SECURE') ?? false,
           auth: {
             user: config.get<string>('SMTP_USER'),
             pass: config.get<string>('SMTP_PASSWORD'),
           },
+          greetingTimeout: 15000,
+          connectionTimeout: 15000,
+          socketTimeout: 15000,
         },
         defaults: {
           from: `Furnishing ${config.get<string>('SMTP_HOST')}`,

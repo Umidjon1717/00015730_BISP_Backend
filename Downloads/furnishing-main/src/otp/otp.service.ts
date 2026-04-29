@@ -65,14 +65,9 @@ export class OtpService {
     };
     const encodedData = await encode(JSON.stringify(details));
 
-    try {
-      await this.mailService.sendMail(customer, otp);
-    } catch (error) {
-      console.log('ERROR ON OTP CREATE, ', error);
-      throw new InternalServerErrorException(
-        'Error sending activation OTP code',
-      );
-    }
+    this.mailService
+      .sendMail(customer, otp)
+      .catch((error) => console.error('OTP email send failed', error));
 
     await this.cacheManager.set(otp, encodedData, 180000);
     return {
