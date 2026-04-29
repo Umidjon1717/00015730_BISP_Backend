@@ -23,17 +23,27 @@ import { CategoryModule } from './category/category.module';
 import { LikeModule } from './like/like.module';
 import { ReviewModule } from './review/review.module';
 
+const databaseUrl = process.env.DATABASE_URL || undefined;
+const useSsl =
+  process.env.PG_SSL === 'true' ||
+  (process.env.DATABASE_URL ?? '').includes('render.com');
+
 @Module({
   imports: [
     ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
     CacheModule.register({ isGlobal: true }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: process.env.PG_HOST || 'localhost',
-      port: Number(process.env.PG_PORT) || 5432,
-      username: process.env.PG_USER || 'postgres',
-      password: process.env.PG_PASS || 'postgres',
-      database: process.env.PG_DB || 'furnishing',
+      ...(databaseUrl
+        ? { url: databaseUrl }
+        : {
+            host: process.env.PG_HOST || 'localhost',
+            port: Number(process.env.PG_PORT) || 5432,
+            username: process.env.PG_USER || 'postgres',
+            password: process.env.PG_PASS || 'postgres',
+            database: process.env.PG_DB || 'furnishing',
+          }),
+      ssl: useSsl ? { rejectUnauthorized: false } : false,
       synchronize: true,
       entities: [join(__dirname, '**/*.entity.{ts,js}')],
       logging: true,

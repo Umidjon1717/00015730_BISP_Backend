@@ -40,6 +40,8 @@ Copy `.env.example` to `.env` and fill in your database and SMTP details before 
 $ cp .env.example .env
 ```
 
+If you use a full connection string, set `DATABASE_URL` and optional `PG_SSL=true` for hosted Postgres providers like Render.
+
 ## Compile and run the project
 
 ```bash

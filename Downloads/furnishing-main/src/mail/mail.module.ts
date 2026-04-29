@@ -11,6 +11,7 @@ import { join } from 'path';
       useFactory: async (config: ConfigService) => ({
         transport: {
           host: config.get<string>('SMTP_HOST') || 'localhost',
+          port: Number(config.get<number>('SMTP_PORT')) || 587,
           secure: config.get<boolean>('SMTP_SECURE') ?? false,
           auth: {
             user: config.get<string>('SMTP_USER') || 'no-reply@example.com',
