@@ -17,7 +17,7 @@ export class MailService {
     const sendPromise = this.mailerService.sendMail({
       to: customer.email,
       subject: 'Welcome to our furnishing site',
-      template: './confirm',
+      template: 'confirm',
       context: {
         first_name: customer.first_name,
         otp,

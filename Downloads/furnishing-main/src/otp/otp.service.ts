@@ -63,6 +63,7 @@ export class OtpService {
       email: customer.email,
       otp_id: newOtp.id,
     };
+    console.log('OTP generated for', customer.email, 'code:', otp);
     const encodedData = await encode(JSON.stringify(details));
 
     this.mailService

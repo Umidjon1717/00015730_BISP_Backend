@@ -21,12 +21,11 @@ import { join } from 'path';
           socketTimeout: 15000,
         },
         defaults: {
-          from: `Furnishing ${config.get<string>('SMTP_HOST')}`,
+          from: `Furnishing <${config.get<string>('SMTP_USER')}>`,
         },
         template: {
           dir: join(__dirname, 'templates'),
           adapter: new HandlebarsAdapter(),
-          template: 'confirm',
           options: {
             strict: true,
           },
