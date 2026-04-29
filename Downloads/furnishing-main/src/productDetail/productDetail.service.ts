@@ -4,7 +4,7 @@ import { UpdateProductDetailDto } from './dto/update-productDetail.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
 import { ProductDetail } from './entities/productDetail.entity';
-import { PaginationDto } from 'src/admin/dto/pagination.dto';
+import { PaginationDto } from '../admin/dto/pagination.dto';
 import { createApiResponse } from '../common/utils';
 import { Product } from '../product/entities/product.entity';
 

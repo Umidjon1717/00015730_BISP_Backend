@@ -10,18 +10,18 @@ import { join } from 'path';
     MailerModule.forRootAsync({
       useFactory: async (config: ConfigService) => ({
         transport: {
-          host: config.get<string>('SMTP_HOST'),
+          host: config.get<string>('SMTP_HOST') || 'localhost',
           secure: config.get<boolean>('SMTP_SECURE') ?? false,
           auth: {
-            user: config.get<string>('SMTP_USER'),
-            pass: config.get<string>('SMTP_PASSWORD'),
+            user: config.get<string>('SMTP_USER') || 'no-reply@example.com',
+            pass: config.get<string>('SMTP_PASSWORD') || '',
           },
           greetingTimeout: 15000,
           connectionTimeout: 15000,
           socketTimeout: 15000,
         },
         defaults: {
-          from: `Furnishing <${config.get<string>('SMTP_USER')}>`,
+          from: `Furnishing <${config.get<string>('SMTP_USER') || 'no-reply@example.com'}>`,
         },
         template: {
           dir: join(__dirname, 'templates'),

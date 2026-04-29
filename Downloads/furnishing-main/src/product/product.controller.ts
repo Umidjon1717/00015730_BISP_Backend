@@ -15,7 +15,7 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
 import { ProductService } from './product.service';
-import { PaginationDto } from 'src/admin/dto/pagination.dto';
+import { PaginationDto } from '../admin/dto/pagination.dto';
 import { AdminAccessTokenGuard } from '../common/guards/admin.access-token.guard';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { FormDataDto } from './dto/form-data.dto';

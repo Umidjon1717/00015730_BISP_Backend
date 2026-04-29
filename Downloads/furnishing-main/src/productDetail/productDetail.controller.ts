@@ -13,7 +13,7 @@ import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
 import { CreateProductDetailDto } from './dto/create-productDetail.dto';
 import { UpdateProductDetailDto } from './dto/update-productDetail.dto';
 import { ProductDetailService } from './productDetail.service';
-import { PaginationDto } from 'src/admin/dto/pagination.dto';
+import { PaginationDto } from '../admin/dto/pagination.dto';
 import { AdminAccessTokenGuard } from '../common/guards/admin.access-token.guard';
 
 @ApiTags('Product Details')

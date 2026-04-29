@@ -14,7 +14,7 @@ import {
   MoreThan,
   Repository,
 } from 'typeorm';
-import { PaginationDto } from 'src/admin/dto/pagination.dto';
+import { PaginationDto } from '../admin/dto/pagination.dto';
 import { createApiResponse } from '../common/utils';
 import { Category } from '../category/entities/category.entity';
 import { deleteFiles, saveFile } from '../common/helpers/saveImage';

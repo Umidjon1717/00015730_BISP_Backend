@@ -1,7 +1,7 @@
 import * as crypto from 'crypto';
 import * as dotenv from 'dotenv';
 dotenv.config();
-const password = process.env.crypt_password;
+const password = process.env.crypt_password || 'defaultCryptoPassword';
 
 const ivstring = Buffer.alloc(16);
 

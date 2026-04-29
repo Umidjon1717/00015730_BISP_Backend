@@ -32,6 +32,14 @@
 $ npm install
 ```
 
+## Environment variables
+
+Copy `.env.example` to `.env` and fill in your database and SMTP details before running the project.
+
+```bash
+$ cp .env.example .env
+```
+
 ## Compile and run the project
 
 ```bash
