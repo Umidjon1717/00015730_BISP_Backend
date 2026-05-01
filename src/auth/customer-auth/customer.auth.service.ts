@@ -19,6 +19,7 @@ import { Request, Response } from 'express';
 import { CreateCustomerDto } from '../../customer/dto/create-customer.dto';
 import { CustomerService } from '../../customer/customer.service';
 import { createApiResponse } from '../../common/utils';
+import { OtpService } from '../../otp/otp.service';
 import { CustomerSignInDto } from '../dto/customer-signin.dto';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { MailService } from '../../mail/mail.service';
@@ -39,6 +40,7 @@ export class CustomerAuthService {
     private readonly customerService: CustomerService,
     private readonly jwtService: JwtService,
     private readonly mailService: MailService,
+    private readonly otpService: OtpService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
@@ -167,10 +169,16 @@ export class CustomerAuthService {
       throw new BadRequestException('Failed to create customer');
     }
 
+    await this.otpService.create({ email: customer.email });
+
     const newCustomer = await this.customerRepo.findOneBy({ id: customer.id });
-    return createApiResponse(201, 'Customer signed up successfully', {
-      newCustomer,
-    });
+    return createApiResponse(
+      201,
+      'Customer signed up successfully. Check your email for the OTP code.',
+      {
+        newCustomer,
+      },
+    );
   }
 
   async signIn(res: Response, customerSignInDto: CustomerSignInDto) {
