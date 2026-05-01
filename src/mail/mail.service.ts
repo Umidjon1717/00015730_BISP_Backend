@@ -8,6 +8,7 @@ export class MailService {
 
   async sendMail(customer: Customer, otp: string) {
     try {
+      console.log(`[MailService] Attempting to send OTP email to ${customer.email}`);
       await this.mailerService.sendMail({
         to: customer.email,
         subject: 'Welcome to our furnishing site',
@@ -24,9 +25,15 @@ export class MailService {
         `,
         text: `Hello ${customer.first_name}, your OTP code is ${otp}.`,
       });
+      console.log(`[MailService] OTP email successfully sent to ${customer.email}`);
     } catch (error) {
-      // Keep detailed reason in server logs while returning a safe message to clients.
-      console.error('OTP email send failed:', error);
+      console.error(
+        `[MailService] OTP email send failed for ${customer.email}:`,
+        error instanceof Error ? error.message : error,
+      );
+      if (error instanceof Error && error.stack) {
+        console.error('[MailService] Stack:', error.stack);
+      }
       throw new InternalServerErrorException('Failed to send OTP email');
     }
   }

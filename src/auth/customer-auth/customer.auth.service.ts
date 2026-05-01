@@ -163,22 +163,40 @@ export class CustomerAuthService {
       throw new UnauthorizedException('Token invalid or expired');
     }
   }
+
   async signUp(res: Response, createCustomerDto: CreateCustomerDto) {
-    const customer = await this.customerService.create(createCustomerDto);
-    if (!customer) {
-      throw new BadRequestException('Failed to create customer');
+    try {
+      const email = createCustomerDto.email;
+      console.log(`[Auth] SignUp started for email: ${email}`);
+      const customer = await this.customerService.create(createCustomerDto);
+      if (!customer) {
+        throw new BadRequestException('Failed to create customer');
+      }
+      console.log(
+        `[Auth] Customer created with ID ${customer.id}, generating OTP`,
+      );
+
+      await this.otpService.create({ email: customer.email });
+      console.log(`[Auth] OTP creation initiated for ${customer.email}`);
+
+      const newCustomer = await this.customerRepo.findOneBy({
+        id: customer.id,
+      });
+      return createApiResponse(
+        201,
+        'Customer signed up successfully. Check your email for the OTP code.',
+        {
+          newCustomer,
+        },
+      );
+    } catch (error) {
+      const email = createCustomerDto.email;
+      console.error(
+        `[Auth] SignUp failed for ${email}:`,
+        error instanceof Error ? error.message : error,
+      );
+      throw error;
     }
-
-    await this.otpService.create({ email: customer.email });
-
-    const newCustomer = await this.customerRepo.findOneBy({ id: customer.id });
-    return createApiResponse(
-      201,
-      'Customer signed up successfully. Check your email for the OTP code.',
-      {
-        newCustomer,
-      },
-    );
   }
 
   async signIn(res: Response, customerSignInDto: CustomerSignInDto) {
