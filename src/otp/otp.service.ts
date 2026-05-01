@@ -2,7 +2,6 @@ import {
   BadRequestException,
   Inject,
   Injectable,
-  InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { CreateOtpDto } from './dto/create-otp.dto';
@@ -139,16 +138,12 @@ export class OtpService {
     };
     const encodedData = await encode(JSON.stringify(details));
 
-    try {
-      await this.mailService.sendMail(customer, otp);
-    } catch (error) {
-      console.log('ERROR ON OTP CREATE, ', error);
-      throw new InternalServerErrorException(
-        'Error sending activation OTP code',
-      );
-    }
-
     await this.safeCacheSet(otp, encodedData, 180000);
+
+    void this.mailService.sendMail(customer, otp).catch((error) => {
+      console.error('ERROR ON OTP CREATE (background send):', error);
+    });
+
     return {
       id: customer.id,
       SMS: 'OTP code sent to your email',
