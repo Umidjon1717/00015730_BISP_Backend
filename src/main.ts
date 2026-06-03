@@ -58,8 +58,23 @@ async function start() {
 
   app.use(cookieParser());
 
-  // Allow browser clients on other origins to receive/set cookies (refresh_token).
-  app.enableCors({ origin: true, credentials: true });
+  const allowedOrigins = [
+    'https://00015730-bisp-frontend.vercel.app',
+    'http://localhost:3000',
+    'http://localhost:5173',
+  ];
+  app.enableCors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error(`CORS blocked: ${origin}`));
+      }
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  });
 
   const config = new DocumentBuilder()
     .addBearerAuth({
