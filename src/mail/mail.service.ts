@@ -4,10 +4,12 @@ import { Customer } from '../customer/entities/customer.entity';
 
 @Injectable()
 export class MailService {
-  private resend: Resend;
-
-  constructor() {
-    this.resend = new Resend(process.env.RESEND_API_KEY);
+  private get resend(): Resend {
+    const key = process.env.RESEND_API_KEY;
+    if (!key) {
+      throw new InternalServerErrorException('RESEND_API_KEY is not configured');
+    }
+    return new Resend(key);
   }
 
   async sendMail(customer: Customer, otp: string) {

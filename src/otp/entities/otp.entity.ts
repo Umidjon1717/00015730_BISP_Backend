@@ -8,7 +8,7 @@ export class Otp {
   @Column()
   otp: string;
 
-  @Column('timestamptz')
+  @Column({ type: 'timestamptz', default: () => 'NOW()' })
   expiration_time: Date;
 
   @Column({ type: 'boolean', default: false })
