@@ -1,15 +1,20 @@
-import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Resend } from 'resend';
 import { Customer } from '../customer/entities/customer.entity';
 
 @Injectable()
 export class MailService {
-  constructor(private readonly mailerService: MailerService) {}
+  private resend: Resend;
+
+  constructor() {
+    this.resend = new Resend(process.env.RESEND_API_KEY);
+  }
 
   async sendMail(customer: Customer, otp: string) {
     try {
       console.log(`[MailService] Attempting to send OTP email to ${customer.email}`);
-      await this.mailerService.sendMail({
+      const { error } = await this.resend.emails.send({
+        from: process.env.RESEND_FROM ?? 'onboarding@resend.dev',
         to: customer.email,
         subject: 'Welcome to our furnishing site',
         html: `
@@ -25,22 +30,24 @@ export class MailService {
         `,
         text: `Hello ${customer.first_name}, your OTP code is ${otp}.`,
       });
+      if (error) {
+        console.error(`[MailService] Resend API error for ${customer.email}:`, error);
+        throw new Error(error.message);
+      }
       console.log(`[MailService] OTP email successfully sent to ${customer.email}`);
     } catch (error) {
       console.error(
         `[MailService] OTP email send failed for ${customer.email}:`,
         error instanceof Error ? error.message : error,
       );
-      if (error instanceof Error && error.stack) {
-        console.error('[MailService] Stack:', error.stack);
-      }
       throw new InternalServerErrorException('Failed to send OTP email');
     }
   }
 
   async sendResetPasswordMail(customer: Customer, otp: string) {
     try {
-      await this.mailerService.sendMail({
+      const { error } = await this.resend.emails.send({
+        from: process.env.RESEND_FROM ?? 'onboarding@resend.dev',
         to: customer.email,
         subject: 'Reset your Furnishing account password',
         html: `
@@ -56,11 +63,12 @@ export class MailService {
         `,
         text: `Hi ${customer.first_name}, your password reset code is ${otp}.`,
       });
+      if (error) {
+        throw new Error(error.message);
+      }
     } catch (error) {
       console.error('Password reset email send failed:', error);
-      throw new InternalServerErrorException(
-        'Failed to send password reset email',
-      );
+      throw new InternalServerErrorException('Failed to send password reset email');
     }
   }
 }
