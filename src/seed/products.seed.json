@@ -782,35 +782,6 @@
       }
     },
     {
-      "sku": "OFF-LMP-001",
-      "name": "LED Desk Lamp",
-      "description": "Adjustable LED desk lamp with dimmer and warm-to-cool color modes.",
-      "price": 59.0,
-      "stock": 45,
-      "tags": ["office", "lighting", "desk"],
-      "colors": ["black", "white"],
-      "images": [
-        "https://images.unsplash.com/photo-1540932239986-30128078f3c1?auto=format&fit=crop&w=1200&q=60",
-        "https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1200&q=60"
-      ],
-      "category": "Office",
-      "detail": {
-        "with": 18,
-        "heght": 45,
-        "depth": 18,
-        "weight": 1.2,
-        "seatHeight": 0,
-        "legHeight": 0,
-        "countryOrigin": "China",
-        "capacity": 0,
-        "warranty": 12,
-        "maxLoadCapacity": 0,
-        "material": "ABS + aluminum",
-        "fillingMaterial": "N/A",
-        "upholsteryMaterial": "N/A"
-      }
-    },
-    {
       "sku": "OUT-TBL-001",
       "name": "Outdoor Side Table",
       "description": "Compact outdoor side table with weather-resistant finish and stable base.",
@@ -864,35 +835,6 @@
         "warranty": 12,
         "maxLoadCapacity": 220,
         "material": "Steel + wood slats",
-        "fillingMaterial": "N/A",
-        "upholsteryMaterial": "N/A"
-      }
-    },
-    {
-      "sku": "LGT-PEN-001",
-      "name": "Pendant Light (Matte Black)",
-      "description": "Minimal pendant light with matte black finish for kitchen islands and dining.",
-      "price": 99.0,
-      "stock": 18,
-      "tags": ["lighting", "pendant", "ceiling"],
-      "colors": ["black"],
-      "images": [
-        "https://images.unsplash.com/photo-1540932239986-30128078f3c1?auto=format&fit=crop&w=1200&q=60",
-        "https://images.unsplash.com/photo-1549187774-b4e9b0445b41?auto=format&fit=crop&w=1200&q=60"
-      ],
-      "category": "Lighting",
-      "detail": {
-        "with": 30,
-        "heght": 28,
-        "depth": 30,
-        "weight": 2.3,
-        "seatHeight": 0,
-        "legHeight": 0,
-        "countryOrigin": "China",
-        "capacity": 0,
-        "warranty": 24,
-        "maxLoadCapacity": 0,
-        "material": "Steel",
         "fillingMaterial": "N/A",
         "upholsteryMaterial": "N/A"
       }
