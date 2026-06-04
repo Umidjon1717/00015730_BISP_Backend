@@ -25,6 +25,7 @@ import { ReviewModule } from './review/review.module';
 import { AppController } from './app.controller';
 import { parse } from 'pg-connection-string';
 import { TelegramModule } from './telegram/telegram.module';
+import { AiModule } from './ai/ai.module';
 
 const databaseUrl = process.env.DATABASE_URL;
 
@@ -93,6 +94,7 @@ const typeOrmOptions = databaseUrl
     LikeModule,
     ReviewModule,
     TelegramModule,
+    AiModule,
   ],
   controllers: [AppController],
   providers: [],
