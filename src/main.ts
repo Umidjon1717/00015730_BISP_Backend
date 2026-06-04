@@ -65,7 +65,11 @@ async function start() {
   ];
   app.enableCors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (!origin) return callback(null, true);
+      const isAllowed =
+        allowedOrigins.includes(origin) ||
+        /^https:\/\/00015730-bisp-frontend[a-z0-9-]*\.vercel\.app$/.test(origin);
+      if (isAllowed) {
         callback(null, true);
       } else {
         callback(new Error(`CORS blocked: ${origin}`));
