@@ -5,6 +5,7 @@ import { ChatDto } from './dto/chat.dto';
 import { SearchDto } from './dto/search.dto';
 import { RecommendDto } from './dto/recommend.dto';
 import { RoomStyleDto } from './dto/room-style.dto';
+import { GenerateRoomDto } from './dto/generate-room.dto';
 
 @ApiTags('AI')
 @Controller('ai')
@@ -41,5 +42,13 @@ export class AiController {
   @ApiResponse({ status: 200, description: 'Room furniture suggestions' })
   roomStyle(@Body() roomStyleDto: RoomStyleDto) {
     return this.aiService.roomStyle(roomStyleDto);
+  }
+
+  @Post('generate-room')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Generate an AI image of a furnished room' })
+  @ApiResponse({ status: 200, description: 'Generated room image URL + selected products' })
+  generateRoom(@Body() generateRoomDto: GenerateRoomDto) {
+    return this.aiService.generateRoom(generateRoomDto);
   }
 }

@@ -8,6 +8,7 @@ import { ChatDto } from './dto/chat.dto';
 import { SearchDto } from './dto/search.dto';
 import { RecommendDto } from './dto/recommend.dto';
 import { RoomStyleDto } from './dto/room-style.dto';
+import { GenerateRoomDto } from './dto/generate-room.dto';
 
 @Injectable()
 export class AiService {
@@ -225,6 +226,76 @@ Only return valid JSON, no extra text.`;
       suggestions,
       designTips: parsed.designTips,
       totalEstimate: parsed.totalEstimate,
+    };
+  }
+
+  async generateRoom(dto: GenerateRoomDto) {
+    const { roomName, width, length, style, budget } = dto;
+    const catalog = await this.getProductCatalog();
+    const affordable = budget ? catalog.filter((p) => p.price <= budget) : catalog;
+
+    // Step 1: pick furniture for the room using GPT
+    const pickPrompt = `You are an interior designer. Pick furniture from the catalog below that fits a ${roomName} measuring ${width}m x ${length}m.
+${style ? `Style: ${style}` : ''}
+${budget ? `Budget: $${budget}` : ''}
+
+Catalog:
+${JSON.stringify(affordable, null, 2)}
+
+Return JSON only:
+{
+  "selectedIds": [array of product IDs, max 6],
+  "layoutDescription": "one sentence describing where each piece is placed in the room"
+}`;
+
+    const pickResponse = await this.openai.chat.completions.create({
+      model: 'gpt-4o',
+      messages: [{ role: 'user', content: pickPrompt }],
+      max_tokens: 300,
+      temperature: 0.4,
+      response_format: { type: 'json_object' },
+    });
+
+    let picked: { selectedIds: number[]; layoutDescription: string };
+    try {
+      picked = JSON.parse(pickResponse.choices[0].message.content);
+    } catch {
+      picked = { selectedIds: [], layoutDescription: '' };
+    }
+
+    const selectedProducts = catalog.filter((p) =>
+      (picked.selectedIds ?? []).includes(p.id),
+    );
+
+    // Step 2: build DALL-E 3 image prompt
+    const furnitureList = selectedProducts
+      .map((p) => `${p.name} (${p.colors?.[0] ?? 'neutral'})`)
+      .join(', ');
+
+    const imagePrompt = `A photorealistic interior design render of a ${roomName}, ${width} meters wide by ${length} meters long.
+${style ? `Interior style: ${style}.` : 'Modern contemporary style.'}
+The room contains: ${furnitureList || 'elegant modern furniture'}.
+${picked.layoutDescription}
+Bright natural lighting, clean walls, hardwood floor, professional architectural photography, 4K quality.`;
+
+    const imageResponse = await this.openai.images.generate({
+      model: 'dall-e-3',
+      prompt: imagePrompt,
+      n: 1,
+      size: '1792x1024',
+      quality: 'standard',
+    });
+
+    const imageUrl = imageResponse.data[0].url;
+
+    return {
+      imageUrl,
+      roomName,
+      dimensions: `${width}m x ${length}m`,
+      style: style ?? 'modern',
+      selectedProducts,
+      layoutDescription: picked.layoutDescription,
+      totalEstimate: selectedProducts.reduce((sum, p) => sum + p.price, 0),
     };
   }
 }
