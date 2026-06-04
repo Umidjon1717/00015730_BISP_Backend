@@ -58,6 +58,12 @@ async function start() {
 
   app.use(cookieParser());
 
+  // Required for Google OAuth popup to work across origins
+  app.use((_req, res, next) => {
+    res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+    next();
+  });
+
   const allowedOrigins = [
     'https://00015730-bisp-frontend.vercel.app',
     'http://localhost:3000',
@@ -68,7 +74,9 @@ async function start() {
       if (!origin) return callback(null, true);
       const isAllowed =
         allowedOrigins.includes(origin) ||
-        /^https:\/\/00015730-bisp-frontend[a-z0-9-]*\.vercel\.app$/.test(origin);
+        /^https:\/\/00015730-bisp-frontend[a-z0-9-]*\.vercel\.app$/.test(
+          origin,
+        );
       if (isAllowed) {
         callback(null, true);
       } else {

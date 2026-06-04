@@ -246,8 +246,12 @@ export class CustomerAuthService {
         audience: this.getGoogleClientId(),
       });
       payload = ticket.getPayload() ?? undefined;
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (_error) {
+    } catch (error) {
+      console.error(
+        '[GoogleAuth] Token verification failed:',
+        error instanceof Error ? error.message : error,
+      );
+      console.error('[GoogleAuth] Client ID used:', this.getGoogleClientId());
       throw new UnauthorizedException('Invalid Google token');
     }
 
