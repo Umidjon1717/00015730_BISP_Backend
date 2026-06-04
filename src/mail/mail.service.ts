@@ -1,45 +1,52 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { Resend } from 'resend';
+import * as nodemailer from 'nodemailer';
 import { Customer } from '../customer/entities/customer.entity';
 
 @Injectable()
 export class MailService {
-  private get resend(): Resend {
-    const key = process.env.RESEND_API_KEY;
-    if (!key) {
-      throw new InternalServerErrorException('RESEND_API_KEY is not configured');
+  private createTransport() {
+    const user = process.env.SMTP_USER;
+    const pass = process.env.SMTP_PASSWORD;
+    if (!user || !pass) {
+      throw new InternalServerErrorException('SMTP_USER or SMTP_PASSWORD is not configured');
     }
-    return new Resend(key);
+    return nodemailer.createTransport({
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true,
+      auth: { user, pass },
+    });
   }
 
   async sendMail(customer: Customer, otp: string) {
+    // Always log OTP to console as fallback for debugging
+    console.log(`[MailService] OTP for ${customer.email}: ${otp}`);
+
     try {
-      console.log(`[MailService] Attempting to send OTP email to ${customer.email}`);
-      const { error } = await this.resend.emails.send({
-        from: process.env.RESEND_FROM ?? 'onboarding@resend.dev',
+      const transporter = this.createTransport();
+      await transporter.sendMail({
+        from: `"Furnishing" <${process.env.SMTP_USER}>`,
         to: customer.email,
-        subject: 'Welcome to our furnishing site',
+        subject: 'Your OTP code - Furnishing',
         html: `
-          <h1 style="color:#4CAF50;font-size:28px;text-align:center;font-family:Arial,sans-serif;">
+          <h1 style="color:#B8960C;font-size:28px;text-align:center;font-family:Arial,sans-serif;">
             Hello, ${customer.first_name}
           </h1>
           <h2 style="font-size:20px;color:#555;text-align:center;font-family:Arial,sans-serif;">
             Please enter the OTP code to activate your account.
           </h2>
-          <h3 style="color:#3d3d3d;font-size:28px;text-align:center;font-family:Arial,sans-serif;margin-top:20px;">
+          <h3 style="color:#3d3d3d;font-size:36px;text-align:center;font-family:Arial,sans-serif;
+                     background:#f5f5f5;padding:16px;border-radius:8px;letter-spacing:8px;">
             ${otp}
           </h3>
+          <p style="color:#999;font-size:12px;text-align:center;">This code expires in 3 minutes.</p>
         `,
-        text: `Hello ${customer.first_name}, your OTP code is ${otp}.`,
+        text: `Hello ${customer.first_name}, your OTP code is ${otp}. It expires in 3 minutes.`,
       });
-      if (error) {
-        console.error(`[MailService] Resend API error for ${customer.email}:`, error);
-        throw new Error(error.message);
-      }
-      console.log(`[MailService] OTP email successfully sent to ${customer.email}`);
+      console.log(`[MailService] OTP email sent successfully to ${customer.email}`);
     } catch (error) {
       console.error(
-        `[MailService] OTP email send failed for ${customer.email}:`,
+        `[MailService] Failed to send OTP email to ${customer.email}:`,
         error instanceof Error ? error.message : error,
       );
       throw new InternalServerErrorException('Failed to send OTP email');
@@ -47,29 +54,30 @@ export class MailService {
   }
 
   async sendResetPasswordMail(customer: Customer, otp: string) {
+    console.log(`[MailService] Reset OTP for ${customer.email}: ${otp}`);
     try {
-      const { error } = await this.resend.emails.send({
-        from: process.env.RESEND_FROM ?? 'onboarding@resend.dev',
+      const transporter = this.createTransport();
+      await transporter.sendMail({
+        from: `"Furnishing" <${process.env.SMTP_USER}>`,
         to: customer.email,
-        subject: 'Reset your Furnishing account password',
+        subject: 'Reset your Furnishing password',
         html: `
-          <h1 style="color:#4CAF50;font-size:26px;text-align:center;font-family:Arial,sans-serif;">
+          <h1 style="color:#B8960C;font-size:26px;text-align:center;font-family:Arial,sans-serif;">
             Reset your password
           </h1>
           <h2 style="font-size:18px;color:#555;text-align:center;font-family:Arial,sans-serif;">
             Hi ${customer.first_name}, use the code below to reset your password.
           </h2>
-          <h3 style="color:#3d3d3d;font-size:28px;text-align:center;font-family:Arial,sans-serif;margin-top:20px;">
+          <h3 style="color:#3d3d3d;font-size:36px;text-align:center;font-family:Arial,sans-serif;
+                     background:#f5f5f5;padding:16px;border-radius:8px;letter-spacing:8px;">
             ${otp}
           </h3>
+          <p style="color:#999;font-size:12px;text-align:center;">This code expires in 1 hour.</p>
         `,
         text: `Hi ${customer.first_name}, your password reset code is ${otp}.`,
       });
-      if (error) {
-        throw new Error(error.message);
-      }
     } catch (error) {
-      console.error('Password reset email send failed:', error);
+      console.error('Reset password email failed:', error instanceof Error ? error.message : error);
       throw new InternalServerErrorException('Failed to send password reset email');
     }
   }
