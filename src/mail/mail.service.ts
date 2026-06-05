@@ -22,7 +22,7 @@ export class MailService {
       connectionTimeout: 10000,
       greetingTimeout: 10000,
       socketTimeout: 10000,
-    });
+    } as nodemailer.TransportOptions & { family?: number; requireTLS?: boolean });
   }
 
   async sendMail(customer: Customer, otp: string) {
