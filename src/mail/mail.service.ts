@@ -1,6 +1,10 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
+import { setDefaultResultOrder } from 'dns';
 import { Customer } from '../customer/entities/customer.entity';
+
+// Force IPv4 DNS resolution — Render blocks IPv6 outbound SMTP
+setDefaultResultOrder('ipv4first');
 
 @Injectable()
 export class MailService {
@@ -8,7 +12,7 @@ export class MailService {
     const user = process.env.SMTP_USER;
     const pass = process.env.SMTP_PASSWORD;
     const host = process.env.SMTP_HOST ?? 'smtp.gmail.com';
-    const port = Number(process.env.SMTP_PORT ?? 587);
+    const port = Number(process.env.SMTP_PORT ?? 465);
     if (!user || !pass) {
       throw new InternalServerErrorException('SMTP_USER or SMTP_PASSWORD is not configured');
     }
