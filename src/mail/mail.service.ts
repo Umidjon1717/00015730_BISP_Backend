@@ -1,40 +1,53 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
-import { setDefaultResultOrder } from 'dns';
+import { resolve4 } from 'dns/promises';
 import { Customer } from '../customer/entities/customer.entity';
-
-// Force IPv4 DNS resolution — Render blocks IPv6 outbound SMTP
-setDefaultResultOrder('ipv4first');
 
 @Injectable()
 export class MailService {
-  private createTransport() {
+  private async createTransport() {
     const user = process.env.SMTP_USER;
     const pass = process.env.SMTP_PASSWORD;
-    const host = process.env.SMTP_HOST ?? 'smtp.gmail.com';
+    const hostname = process.env.SMTP_HOST ?? 'smtp.gmail.com';
     const port = Number(process.env.SMTP_PORT ?? 465);
     if (!user || !pass) {
       throw new InternalServerErrorException('SMTP_USER or SMTP_PASSWORD is not configured');
     }
+
+    // Resolve hostname to IPv4 explicitly — Render blocks IPv6 outbound SMTP
+    let host = hostname;
+    try {
+      const addrs = await resolve4(hostname);
+      if (addrs.length > 0) {
+        host = addrs[0];
+        console.log(`[MailService] Resolved ${hostname} → ${host} (IPv4)`);
+      }
+    } catch {
+      console.warn(`[MailService] IPv4 DNS resolve failed, using hostname directly`);
+    }
+
     return nodemailer.createTransport({
       host,
       port,
       secure: port === 465,
-      requireTLS: port === 587,
       auth: { user, pass },
-      tls: { rejectUnauthorized: false },
-      connectionTimeout: 10000,
-      greetingTimeout: 10000,
-      socketTimeout: 10000,
-    } as nodemailer.TransportOptions & { family?: number; requireTLS?: boolean });
+      tls: {
+        rejectUnauthorized: false,
+        servername: hostname,
+      },
+      connectionTimeout: 15000,
+      greetingTimeout: 15000,
+      socketTimeout: 15000,
+    });
   }
 
   async sendMail(customer: Customer, otp: string) {
-    // Always log OTP to console as fallback for debugging
-    console.log(`[MailService] OTP for ${customer.email}: ${otp}`);
+    console.log(`=============================`);
+    console.log(`OTP for ${customer.email}: ${otp}`);
+    console.log(`=============================`);
 
     try {
-      const transporter = this.createTransport();
+      const transporter = await this.createTransport();
       await transporter.sendMail({
         from: `"Furnishing" <${process.env.SMTP_USER}>`,
         to: customer.email,
@@ -67,7 +80,7 @@ export class MailService {
   async sendResetPasswordMail(customer: Customer, otp: string) {
     console.log(`[MailService] Reset OTP for ${customer.email}: ${otp}`);
     try {
-      const transporter = this.createTransport();
+      const transporter = await this.createTransport();
       await transporter.sendMail({
         from: `"Furnishing" <${process.env.SMTP_USER}>`,
         to: customer.email,
