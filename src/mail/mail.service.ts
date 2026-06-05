@@ -7,14 +7,18 @@ export class MailService {
   private createTransport() {
     const user = process.env.SMTP_USER;
     const pass = process.env.SMTP_PASSWORD;
+    const host = process.env.SMTP_HOST ?? 'smtp.gmail.com';
+    const port = Number(process.env.SMTP_PORT ?? 587);
     if (!user || !pass) {
       throw new InternalServerErrorException('SMTP_USER or SMTP_PASSWORD is not configured');
     }
     return nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 465,
-      secure: true,
+      host,
+      port,
+      secure: port === 465,
+      requireTLS: port === 587,
       auth: { user, pass },
+      tls: { rejectUnauthorized: false },
     });
   }
 
