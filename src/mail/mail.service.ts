@@ -19,6 +19,9 @@ export class MailService {
       requireTLS: port === 587,
       auth: { user, pass },
       tls: { rejectUnauthorized: false },
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 10000,
     });
   }
 
