@@ -140,6 +140,10 @@ export class OtpService {
 
     await this.safeCacheSet(otp, encodedData, 180000);
 
+    console.log(`=============================`);
+    console.log(`OTP for ${customer.email}: ${otp}`);
+    console.log(`=============================`);
+
     void this.mailService.sendMail(customer, otp).catch((error) => {
       console.error(
         `[OtpService] Background mail send failed for ${customer.email}:`,
