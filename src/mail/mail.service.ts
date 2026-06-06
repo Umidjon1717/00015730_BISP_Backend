@@ -1,44 +1,13 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import * as nodemailer from 'nodemailer';
-import { resolve4 } from 'dns/promises';
+import { Resend } from 'resend';
 import { Customer } from '../customer/entities/customer.entity';
 
 @Injectable()
 export class MailService {
-  private async createTransport() {
-    const user = process.env.SMTP_USER;
-    const pass = process.env.SMTP_PASSWORD;
-    const hostname = process.env.SMTP_HOST ?? 'smtp.gmail.com';
-    const port = Number(process.env.SMTP_PORT ?? 465);
-    if (!user || !pass) {
-      throw new InternalServerErrorException('SMTP_USER or SMTP_PASSWORD is not configured');
-    }
-
-    // Resolve hostname to IPv4 explicitly — Render blocks IPv6 outbound SMTP
-    let host = hostname;
-    try {
-      const addrs = await resolve4(hostname);
-      if (addrs.length > 0) {
-        host = addrs[0];
-        console.log(`[MailService] Resolved ${hostname} → ${host} (IPv4)`);
-      }
-    } catch {
-      console.warn(`[MailService] IPv4 DNS resolve failed, using hostname directly`);
-    }
-
-    return nodemailer.createTransport({
-      host,
-      port,
-      secure: port === 465,
-      auth: { user, pass },
-      tls: {
-        rejectUnauthorized: false,
-        servername: hostname,
-      },
-      connectionTimeout: 15000,
-      greetingTimeout: 15000,
-      socketTimeout: 15000,
-    });
+  private get resend(): Resend {
+    const key = process.env.RESEND_API_KEY;
+    if (!key) throw new InternalServerErrorException('RESEND_API_KEY is not configured');
+    return new Resend(key);
   }
 
   async sendMail(customer: Customer, otp: string) {
@@ -47,9 +16,8 @@ export class MailService {
     console.log(`=============================`);
 
     try {
-      const transporter = await this.createTransport();
-      await transporter.sendMail({
-        from: `"Furnishing" <${process.env.SMTP_USER}>`,
+      const { error } = await this.resend.emails.send({
+        from: process.env.RESEND_FROM ?? 'onboarding@resend.dev',
         to: customer.email,
         subject: 'Your OTP code - Furnishing',
         html: `
@@ -67,6 +35,10 @@ export class MailService {
         `,
         text: `Hello ${customer.first_name}, your OTP code is ${otp}. It expires in 3 minutes.`,
       });
+      if (error) {
+        console.error(`[MailService] Resend error for ${customer.email}:`, error);
+        throw new Error(error.message);
+      }
       console.log(`[MailService] OTP email sent successfully to ${customer.email}`);
     } catch (error) {
       console.error(
@@ -80,9 +52,8 @@ export class MailService {
   async sendResetPasswordMail(customer: Customer, otp: string) {
     console.log(`[MailService] Reset OTP for ${customer.email}: ${otp}`);
     try {
-      const transporter = await this.createTransport();
-      await transporter.sendMail({
-        from: `"Furnishing" <${process.env.SMTP_USER}>`,
+      const { error } = await this.resend.emails.send({
+        from: process.env.RESEND_FROM ?? 'onboarding@resend.dev',
         to: customer.email,
         subject: 'Reset your Furnishing password',
         html: `
@@ -100,6 +71,7 @@ export class MailService {
         `,
         text: `Hi ${customer.first_name}, your password reset code is ${otp}.`,
       });
+      if (error) throw new Error(error.message);
     } catch (error) {
       console.error('Reset password email failed:', error instanceof Error ? error.message : error);
       throw new InternalServerErrorException('Failed to send password reset email');
