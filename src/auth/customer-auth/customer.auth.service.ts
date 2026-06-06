@@ -12,8 +12,8 @@ import { JwtService } from '@nestjs/jwt';
 import { compare, hash } from 'bcrypt';
 import { randomBytes } from 'crypto';
 import { generate } from 'otp-generator';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { Customer } from '../../customer/entities/customer.entity';
 import { Request, Response } from 'express';
 import { CreateCustomerDto } from '../../customer/dto/create-customer.dto';
@@ -42,6 +42,7 @@ export class CustomerAuthService {
     private readonly mailService: MailService,
     private readonly otpService: OtpService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    @InjectDataSource() private dataSource: DataSource,
   ) {}
 
   private async safeCacheSet(key: string, value: string, ttlMs: number) {
@@ -362,6 +363,66 @@ export class CustomerAuthService {
 
     res.clearCookie('refresh_token');
     return createApiResponse(200, 'Customer signed out successfully', { id });
+  }
+
+  async deleteAccount(customerId: number, res: Response) {
+    const customer = await this.customerRepo.findOne({
+      where: { id: customerId },
+    });
+    if (!customer) {
+      throw new NotFoundException('Customer not found');
+    }
+
+    await this.dataSource.transaction(async (em) => {
+      await em.query('DELETE FROM otp WHERE email = $1', [customer.email]);
+      await em.query('DELETE FROM "like" WHERE "customerId" = $1', [
+        customerId,
+      ]);
+      await em.query('DELETE FROM review WHERE "customerId" = $1', [
+        customerId,
+      ]);
+      await em.query('DELETE FROM ratings WHERE customer_id = $1', [
+        customerId,
+      ]);
+
+      const orders: { id: number }[] = await em.query(
+        'SELECT id FROM "order" WHERE "customerId" = $1',
+        [customerId],
+      );
+      const orderIds = orders.map((o) => o.id);
+      if (orderIds.length > 0) {
+        await em.query(
+          'DELETE FROM order_detail WHERE "orderId" = ANY($1::int[])',
+          [orderIds],
+        );
+        await em.query('DELETE FROM payment WHERE "orderId" = ANY($1::int[])', [
+          orderIds,
+        ]);
+      }
+      await em.query('DELETE FROM "order" WHERE "customerId" = $1', [
+        customerId,
+      ]);
+      await em.query('DELETE FROM order_addresses WHERE customer_id = $1', [
+        customerId,
+      ]);
+
+      const carts: { id: number }[] = await em.query(
+        'SELECT id FROM cart WHERE customer_id = $1',
+        [customerId],
+      );
+      const cartIds = carts.map((c) => c.id);
+      if (cartIds.length > 0) {
+        await em.query(
+          'DELETE FROM cart_detail WHERE cart_id = ANY($1::int[])',
+          [cartIds],
+        );
+      }
+      await em.query('DELETE FROM cart WHERE customer_id = $1', [customerId]);
+      await em.query('DELETE FROM customer WHERE id = $1', [customerId]);
+    });
+
+    res.clearCookie('refresh_token');
+    return createApiResponse(200, 'Account deleted successfully');
   }
 
   async forgotPassword(email: string) {

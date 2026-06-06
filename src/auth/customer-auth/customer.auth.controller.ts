@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   Headers,
   HttpCode,
@@ -132,5 +133,21 @@ export class CustomerAuthController {
     @Body() googleSignInDto: GoogleSignInDto,
   ) {
     return this.customerAuthService.googleSignIn(res, googleSignInDto);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(CustomerRefreshTokenGuard)
+  @Delete('account')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Permanently delete the authenticated customer account',
+  })
+  @ApiResponse({ status: 200, description: 'Account deleted successfully' })
+  async deleteAccount(
+    @Res({ passthrough: true }) res: Response,
+    @Req() req: Request,
+  ) {
+    const customerId = Number(req['user']?.id);
+    return this.customerAuthService.deleteAccount(customerId, res);
   }
 }
