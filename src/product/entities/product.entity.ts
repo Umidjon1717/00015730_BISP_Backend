@@ -80,6 +80,15 @@ export class Product {
   @Column({ type: 'simple-array', nullable: true })
   images: string[];
 
+  @Column({ type: 'float', nullable: true })
+  width: number | null;
+
+  @Column({ type: 'float', nullable: true })
+  length: number | null;
+
+  @Column({ type: 'float', nullable: true })
+  height: number | null;
+
   @OneToOne(() => Discount, (discount) => discount.product)
   discount: Discount;
 
