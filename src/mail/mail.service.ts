@@ -11,6 +11,8 @@ export class MailService {
       service_id: process.env.EMAILJS_SERVICE_ID ?? 'service_6fk7tod',
       template_id: process.env.EMAILJS_TEMPLATE_ID ?? 'template_mdg21vo',
       user_id: process.env.EMAILJS_PUBLIC_KEY ?? 'ytLvpgAYTPmAc-Nk9',
+      accessToken:
+        process.env.EMAILJS_PRIVATE_KEY ?? 'lvXJF6zxyX_oODo0dNvKq',
     };
   }
 
