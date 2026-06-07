@@ -36,13 +36,22 @@ export class PaymentService {
       metadata: { orderId: String(orderId) },
     });
 
-    await this.paymentRepo.save({
-      orderId,
-      amount,
-      payment_method: PaymentMethod.Card,
-      payment_date: new Date(),
-      status: PaymentStatus.PENDING,
-    });
+    const existing = await this.paymentRepo.findOne({ where: { orderId } });
+    if (existing) {
+      await this.paymentRepo.update(existing.id, {
+        payment_method: PaymentMethod.Card,
+        amount,
+        status: PaymentStatus.PENDING,
+      });
+    } else {
+      await this.paymentRepo.save({
+        orderId,
+        amount,
+        payment_method: PaymentMethod.Card,
+        payment_date: new Date(),
+        status: PaymentStatus.PENDING,
+      });
+    }
 
     return createApiResponse(200, 'Payment intent created', {
       clientSecret: intent.client_secret,
