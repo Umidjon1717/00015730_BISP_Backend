@@ -66,6 +66,7 @@ async function start() {
 
   const allowedOrigins = [
     'https://00015730-bisp-frontend.vercel.app',
+    'https://furnishing-admin.vercel.app',
     'http://localhost:3000',
     'http://localhost:5173',
   ];
@@ -76,7 +77,8 @@ async function start() {
         allowedOrigins.includes(origin) ||
         /^https:\/\/00015730-bisp-frontend[a-z0-9-]*\.vercel\.app$/.test(
           origin,
-        );
+        ) ||
+        /^https:\/\/furnishing-admin[a-z0-9-]*\.vercel\.app$/.test(origin);
       if (isAllowed) {
         callback(null, true);
       } else {
