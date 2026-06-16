@@ -67,6 +67,7 @@ async function start() {
   const allowedOrigins = [
     'https://00015730-bisp-frontend.vercel.app',
     'https://furnishing-admin.vercel.app',
+    'https://zero0015730-bisp-backend.onrender.com',
     'http://localhost:3000',
     'http://localhost:5173',
   ];
